@@ -16,6 +16,9 @@ const scssSync = adaptorSync(sass, eyeglass, sassOptions);
 
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
+    autoImport: {
+      forbidEval: true
+    },
     'css-blocks': {
       aliases: {
         objects: path.resolve(__dirname, 'app/styles/objects'),
