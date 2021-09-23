@@ -1,0 +1,92 @@
+/* ==========================================================================
+   # LAYOUT
+   ========================================================================== */
+
+@import 'setup';
+
+:scope {
+  block-name: o-layout;
+  display: block;
+  margin-left: - spacing('base');
+  list-style: none;
+  letter-spacing: 0;
+  font-size: 0;
+}
+
+
+  .item {
+    display: inline-block;
+    box-sizing: border-box;
+    padding-left: spacing('base');
+    padding-bottom: spacing('base');
+    width: 100%;
+    vertical-align: top;
+    letter-spacing: $letter-spacing;
+    font-size: $font-size;
+    font-size: 1rem;
+  }
+
+
+
+
+/* Widths
+  ========================================================================== */
+
+$fractions: 1 2 3 4 5 6 12;
+
+@mixin widths($columns, $bp-name: null) {
+  @each $denominator in $columns {
+    @for $numerator from 1 through $denominator {
+      .item[#{$bp-name}=width-#{$numerator}-#{$denominator}] {
+        width: ($numerator / $denominator) * 100%;
+      }
+    }
+  }
+}
+
+// Default widths
+@include widths($fractions, global);
+
+// Responsive widths
+@each $bp-name, $bp-value in $mq-breakpoints {
+  @include mq($from: $bp-name) {
+    @include widths($fractions, #{$bp-name});
+  }
+}
+
+
+
+
+
+/* Gaps
+  ========================================================================== */
+  $spacings_combinations: (
+    none:  0
+  );
+
+@each $breakpoint-name, $breakpoint-value in $mq-breakpoints {
+  @include mq($from: $breakpoint-name) {
+    @each $spacing-name, $spacing-size in $spacings_combinations {
+      :scope[#{$breakpoint-name}=gap-#{$spacing-name}] {
+        margin-left: - $spacing-size;
+      }
+
+      :scope[#{$breakpoint-name}=gap-#{$spacing-name}] .item {
+        padding-left: $spacing-size;
+        padding-bottom: $spacing-size;
+      }
+
+      :scope[#{$breakpoint-name}=gap-horizontal-#{$spacing-name}] {
+        margin-left: - $spacing-size;
+      }
+
+      :scope[#{$breakpoint-name}=gap-horizontal-#{$spacing-name}] .item {
+        padding-left: $spacing-size;
+      }
+
+      :scope[#{$breakpoint-name}=gap-vertical-#{$spacing-name}] .item {
+        padding-bottom: $spacing-size;
+      }
+    }
+  }
+}
