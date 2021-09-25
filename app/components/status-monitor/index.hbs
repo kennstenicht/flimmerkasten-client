@@ -1,0 +1,36 @@
+<div block:scope ...attributes>
+  <div block:class="container">
+    <h1 block:class="display-id">
+      {{this.peer.display.id}}
+    </h1>
+
+    <div block:class="status">
+      {{this.peer.state}}
+    </div>
+
+    <div block:class="message">
+      {{this.peer.message}}
+    </div>
+
+    <div block:class="meta">
+      <div block:class="label">
+        Peer ID:
+      </div>
+      <div block:class="value">
+        {{this.peer.id}}
+      </div>
+      <div block:class="label">
+        Screen Width
+      </div>
+      <div block:class="value">
+        {{this.peer.display.bounds.width}}
+      </div>
+      <div block:class="label">
+        Screen Height
+      </div>
+      <div block:class="value">
+        {{this.peer.display.bounds.height}}
+      </div>
+    </div>
+  </div>
+</div>

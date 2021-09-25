@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import RouterService from '@ember/routing/router-service';
 import { registerDestructor } from '@ember/destroyable';
-import { tracked } from '@glimmer/tracking';
+import { tracked } from 'tracked-built-ins';
 import { restartableTask, timeout } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import Peer, { DataConnection } from 'peerjs';
@@ -12,6 +12,12 @@ const { ipcRenderer } = require('electron');
 
 interface Display {
   id: string;
+  bounds: {
+    width: number,
+    height: number
+    x: number,
+    y: number
+  }
 }
 
 export default class PeerService extends Service {
@@ -20,10 +26,12 @@ export default class PeerService extends Service {
 
 
   // Defaults
-  dataConnection!: DataConnection;
-  display?: Display;
+  dataConnection?: DataConnection;
+  @tracked display?: Display;
+  @tracked id?: string;
+  @tracked message?: string;
+  @tracked state?: string;
   peer?: Peer;
-  @tracked id!: string;
 
 
   // Constructor
@@ -48,7 +56,8 @@ export default class PeerService extends Service {
 
   @action
   onConnectionOpen() {
-    console.log('onConnectionOpen');
+    this.state = 'Connected';
+    this.message = '';
   }
 
   @action
@@ -61,11 +70,9 @@ export default class PeerService extends Service {
       case 'server-error':
         taskFor(this.retryPeerConnection).perform();
         break;
-
-      default:
-        console.log(error.type, error);
-        break;
     }
+
+    this.message = error.message;
   }
 
   @action
@@ -84,7 +91,11 @@ export default class PeerService extends Service {
   // Tasks
   @restartableTask
   *createDataConnection() {
-    this.dataConnection = yield this.peer?.connect('master-peer', {
+    if (!this.peer) {
+      return;
+    }
+
+    this.dataConnection = this.peer.connect('master-peer', {
       metadata: {
         window: {
           width: window.innerWidth,
@@ -94,13 +105,14 @@ export default class PeerService extends Service {
       }
     });
 
-    // this.dataConnection.on('error', this.onError);
     this.dataConnection.on('close', this.onConnectionClose);
     this.dataConnection.on('open', this.onConnectionOpen);
   }
 
   @restartableTask
   *createPeerConnection() {
+    this.state = 'Connecting...';
+
     this.peer = new Peer(undefined, {
       host: 'flimmerkasten.herokuapp.com',
       secure: true

@@ -1,0 +1,50 @@
+// Imports
+@import 'setup';
+@block layout from 'objects/objects.layout.block.scss';
+
+
+// Exports
+@export (layout);
+
+
+// Block
+:scope {
+  block-name: c-status-monitor;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+  .container {
+    padding: spacing('large');
+    max-width: 700px;
+  }
+
+    .display-id {
+      margin: 0;
+    }
+
+    .status {
+      font-family: $font-family-decoration;
+
+      @include font-size($font-size-h3);
+    }
+
+    .message {
+      margin-bottom: spacing('large');
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr auto;
+    }
+
+      .label {
+        font-weight: bold;
+        text-align: left;
+      }
+
+      .value {
+        text-align: right;
+      }
