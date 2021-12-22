@@ -7,5 +7,6 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function () {
-  this.route('status', { path: '/' })
+  this.route('iframe');
+  this.route('status', { path: '/' });
 });

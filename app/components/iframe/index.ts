@@ -5,7 +5,7 @@ import PeerService from 'flimmerkasten-client/services/peer';
 interface Args {
 }
 
-export default class StatusMonitorComponent extends Component <Args> {
+export default class IframeComponent extends Component <Args> {
   // Services
   @service peer!: PeerService;
 }

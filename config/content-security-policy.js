@@ -12,7 +12,7 @@ module.exports = function (environment) {
         'eval',
       ],
       'font-src': ["'self'", 'https://fonts.gstatic.com'],
-      'frame-src': ["'self'"],
+      'frame-src': ["'self'",'*'],
       'connect-src': [
         "'self'",
         'https://flimmerkasten.herokuapp.com/',

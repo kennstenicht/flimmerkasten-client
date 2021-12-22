@@ -31,8 +31,10 @@ export default class PeerService extends Service {
   @tracked id?: string;
   @tracked message?: string;
   @tracked state?: string;
+  @tracked settings: any = {
+    iframeSrc: 'https://ag-prop.com'
+  };
   peer?: Peer;
-
 
   // Constructor
   constructor() {
@@ -55,6 +57,28 @@ export default class PeerService extends Service {
   }
 
   @action
+  onConnectionData(data: any) {
+    let actions = data.split(';');
+
+    actions.forEach((action: any) => {
+      let [actionName, actionValue] = action.split('=');
+
+      switch (actionName) {
+        case 'transitionTo':
+          this.router.transitionTo(actionValue);
+          break;
+
+        case 'settings':
+          this.settings = {
+            ...this.settings,
+            ...JSON.parse(actionValue)
+          };
+          break;
+      }
+    });
+  }
+
+  @action
   onConnectionOpen() {
     this.state = 'Connected';
     this.message = '';
@@ -64,6 +88,7 @@ export default class PeerService extends Service {
   onPeerError(error: any) {
     switch (error.type) {
       case 'peer-unavailable':
+      case 'socket-closed':
         taskFor(this.createDataConnection).perform();
         break;
 
@@ -72,7 +97,7 @@ export default class PeerService extends Service {
         break;
     }
 
-    this.message = error.message;
+    this.message = `${error.type}: ${error.message}`;
   }
 
   @action
@@ -91,6 +116,7 @@ export default class PeerService extends Service {
   // Tasks
   @restartableTask
   *createDataConnection() {
+    this.state = 'Connecting...';
     if (!this.peer) {
       return;
     }
@@ -107,6 +133,7 @@ export default class PeerService extends Service {
 
     this.dataConnection.on('close', this.onConnectionClose);
     this.dataConnection.on('open', this.onConnectionOpen);
+    this.dataConnection.on('data', this.onConnectionData);
   }
 
   @restartableTask
