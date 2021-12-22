@@ -10,6 +10,7 @@ module.exports = function (environment) {
         "'self'",
         "'unsafe-inline'",
         'eval',
+        "'unsafe-eval'"
       ],
       'font-src': ["'self'", 'https://fonts.gstatic.com'],
       'frame-src': ["'self'",'*'],
