@@ -1,34 +1,34 @@
-<div block:scope ...attributes>
-  <div block:class="container">
-    <h1 block:class="display-id">
+<div class={{bem this.blockName}} ...attributes>
+  <div class={{bem this.blockName "container"}}>
+    <h1 class={{bem this.blockName "display-id"}}>
       {{this.peer.display.id}}
     </h1>
 
-    <div block:class="status">
+    <div class={{bem this.blockName "status"}}>
       {{this.peer.state}}
     </div>
 
-    <div block:class="message">
+    <div class={{bem this.blockName "message"}}>
       {{this.peer.message}}
     </div>
 
-    <div block:class="meta">
-      <div block:class="label">
+    <div class={{bem this.blockName "meta"}}>
+      <div class={{bem this.blockName "label"}}>
         Peer ID:
       </div>
-      <div block:class="value">
+      <div class={{bem this.blockName "value"}}>
         {{this.peer.id}}
       </div>
-      <div block:class="label">
+      <div class={{bem this.blockName "label"}}>
         Screen Width
       </div>
-      <div block:class="value">
+      <div class={{bem this.blockName "value"}}>
         {{this.peer.display.bounds.width}}
       </div>
-      <div block:class="label">
+      <div class={{bem this.blockName "label"}}>
         Screen Height
       </div>
-      <div block:class="value">
+      <div class={{bem this.blockName "value"}}>
         {{this.peer.display.bounds.height}}
       </div>
     </div>

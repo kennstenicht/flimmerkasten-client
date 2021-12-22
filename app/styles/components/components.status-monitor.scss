@@ -1,50 +1,44 @@
-// Imports
-@import 'setup';
-@block layout from 'objects/objects.layout.block.scss';
+/* ==========================================================================
+   # STATUS MONITOR
+   ========================================================================== */
 
-
-// Exports
-@export (layout);
-
-
-// Block
-:scope {
-  block-name: c-status-monitor;
+.c-status-monitor {
   display: grid;
   justify-content: center;
   align-items: center;
   height: 100vh;
   text-align: center;
-}
-  .container {
+
+  &__container {
     padding: spacing('large');
     max-width: 700px;
   }
 
-    .display-id {
+    &__display-id {
       margin: 0;
     }
 
-    .status {
+    &__status {
       font-family: $font-family-decoration;
 
-      @include font-size($font-size-h3);
+      @include inuit-font-size($font-size-h3);
     }
 
-    .message {
+    &__message {
       margin-bottom: spacing('large');
     }
 
-    .meta {
+    &__meta {
       display: grid;
       grid-template-columns: 1fr auto;
     }
 
-      .label {
+      &__label {
         font-weight: bold;
         text-align: left;
       }
 
-      .value {
+      &__value {
         text-align: right;
       }
+}

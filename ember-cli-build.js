@@ -1,40 +1,17 @@
 'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-const sass = require('node-sass');
-const eyeglass = require('eyeglass');
-const { adaptor, adaptorSync } = require('@css-blocks/eyeglass');
-const path = require('path');
 
-const sassOptions = {
-  outputStyle: 'compressed',
-  includePaths: ['app/styles', 'node_modules', 'node_modules/sass-mq'],
-};
-
-const scss = adaptor(sass, eyeglass, sassOptions);
-const scssSync = adaptorSync(sass, eyeglass, sassOptions);
 
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
     autoImport: {
       forbidEval: true
     },
-    'css-blocks': {
-      aliases: {
-        objects: path.resolve(__dirname, 'app/styles/objects'),
-        utilities: path.resolve(__dirname, 'app/styles/utilities'),
-      },
-      parserOpts: {
-        outputMode: 'BEM',
-        preprocessors: {
-          scss,
-        },
-        preprocessorsSync: {
-          scss: scssSync,
-        },
-      },
+    sassOptions: {
+      outputStyle: 'compressed',
+      includePaths: ['app/styles', 'node_modules'],
     },
-    sassOptions,
   });
 
   // Use `app.import` to add additional libraries to the generated
