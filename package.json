@@ -62,6 +62,7 @@
     "ember-cli-babel": "^7.26.6",
     "ember-cli-content-security-policy": "2.0.0-4",
     "ember-cli-dependency-checker": "^3.2.0",
+    "ember-cli-deprecation-workflow": "^2.0.0",
     "ember-cli-htmlbars": "^5.7.1",
     "ember-cli-inject-live-reload": "^2.1.0",
     "ember-cli-sass": "^10.0.1",
