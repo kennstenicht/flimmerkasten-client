@@ -1,13 +1,15 @@
 import Component from '@glimmer/component';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import PeerService from 'flimmerkasten-client/services/peer';
 import bem from 'flimmerkasten-client/helpers/bem';
 
-interface Args {}
+interface StatusMonitorSignature {
+  Element: HTMLDivElement
+}
 
-export default class StatusMonitorComponent extends Component<Args> {
+export default class StatusMonitor extends Component<StatusMonitorSignature> {
   // Services
-  @service peer!: PeerService;
+  @service declare peer: PeerService;
 
 
   // Defaults
@@ -16,7 +18,7 @@ export default class StatusMonitorComponent extends Component<Args> {
 
   // Template
   <template>
-    <div class={{bem this.blockName}}>
+    <div class={{bem this.blockName}} ...attributes>
       <div class={{bem this.blockName "container"}}>
         <h1 class={{bem this.blockName "display-id"}}>
           {{this.peer.display.id}}

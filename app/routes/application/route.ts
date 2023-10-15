@@ -4,8 +4,7 @@ import PeerService from 'flimmerkasten-client/services/peer';
 
 export default class ApplicationRoute extends Route {
   // Services
-  @service peer!: PeerService;
-
+  @service declare peer: PeerService;
 
   // Hooks
   beforeModel() {

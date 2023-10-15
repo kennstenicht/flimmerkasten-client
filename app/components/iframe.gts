@@ -1,13 +1,15 @@
 import Component from '@glimmer/component';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import PeerService from 'flimmerkasten-client/services/peer';
 import bem from 'flimmerkasten-client/helpers/bem';
 
-interface Args {}
+interface IframeSignature {
+  Element: HTMLIframeElement
+}
 
-export default class IframeComponent extends Component<Args> {
+export default class Iframe extends Component<IframeSignature> {
   // Services
-  @service peer!: PeerService;
+  @service declare peer: PeerService;
 
 
   // Defaults
@@ -21,7 +23,8 @@ export default class IframeComponent extends Component<Args> {
         class={{bem this.blockName}}
         src={{this.peer.settings.iframeSrc}}
         title="Website"
+        ...attributes
       ></iframe>
     {{/if}}
   </template>
-  }
+}

@@ -1,5 +1,5 @@
 import Service from '@ember/service';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { action } from '@ember/object';
 import RouterService from '@ember/routing/router-service';
 import { registerDestructor } from '@ember/destroyable';
@@ -13,17 +13,16 @@ const { ipcRenderer } = require('electron');
 interface Display {
   id: string;
   bounds: {
-    width: number,
-    height: number
-    x: number,
-    y: number
-  }
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+  };
 }
 
 export default class PeerService extends Service {
   // Services
   @service router!: RouterService;
-
 
   // Defaults
   dataConnection?: DataConnection;
@@ -32,7 +31,7 @@ export default class PeerService extends Service {
   @tracked message?: string;
   @tracked state?: string;
   @tracked settings: any = {
-    iframeSrc: 'https://ag-prop.com'
+    iframeSrc: 'https://ag-prop.com',
   };
   peer?: Peer;
 
@@ -48,7 +47,6 @@ export default class PeerService extends Service {
       this.peer?.destroy();
     });
   }
-
 
   // Actions
   @action
@@ -71,7 +69,7 @@ export default class PeerService extends Service {
         case 'settings':
           this.settings = {
             ...this.settings,
-            ...JSON.parse(actionValue)
+            ...JSON.parse(actionValue),
           };
           break;
       }
@@ -112,7 +110,6 @@ export default class PeerService extends Service {
     this.display = display;
   }
 
-
   // Tasks
   @restartableTask
   *createDataConnection() {
@@ -125,10 +122,10 @@ export default class PeerService extends Service {
       metadata: {
         window: {
           width: window.innerWidth,
-          height: window.innerHeight
+          height: window.innerHeight,
         },
-        display: this.display
-      }
+        display: this.display,
+      },
     });
 
     this.dataConnection.on('close', this.onConnectionClose);
@@ -142,7 +139,7 @@ export default class PeerService extends Service {
 
     this.peer = new Peer(undefined, {
       host: 'flimmerkasten.herokuapp.com',
-      secure: true
+      secure: true,
     });
 
     this.peer.on('error', this.onPeerError);
