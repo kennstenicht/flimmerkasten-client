@@ -1,5 +1,5 @@
 import Service from '@ember/service';
-import { service } from '@ember/service';
+import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import RouterService from '@ember/routing/router-service';
 import { registerDestructor } from '@ember/destroyable';
@@ -8,7 +8,7 @@ import { restartableTask, timeout } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import Peer, { DataConnection } from 'peerjs';
 
-const { ipcRenderer } = require('electron');
+// const { ipcRenderer } = require('electron');
 
 interface Display {
   id: string;
@@ -22,7 +22,7 @@ interface Display {
 
 export default class PeerService extends Service {
   // Services
-  @service router!: RouterService;
+  @service declare router: RouterService;
 
   // Defaults
   dataConnection?: DataConnection;
@@ -39,7 +39,7 @@ export default class PeerService extends Service {
   constructor() {
     super(...arguments);
 
-    ipcRenderer.on('display-data', this.setDisplayData);
+    // ipcRenderer.on('display-data', this.setDisplayData);
 
     taskFor(this.createPeerConnection).perform();
 

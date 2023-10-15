@@ -21,20 +21,11 @@
     "module": "es6",
     "experimentalDecorators": true,
     "paths": {
-      "flimmerkasten-client/tests/*": [
-        "tests/*"
-      ],
-      "flimmerkasten-client/*": [
-        "app/*"
-      ],
-      "*": [
-        "types/*"
-      ]
-    }
+      "flimmerkasten-client/tests/*": ["tests/*"],
+      "flimmerkasten-client/*": ["app/*"],
+      "*": ["types/*"]
+    },
+    "skipLibCheck": true
   },
-  "include": [
-    "app/**/*",
-    "tests/**/*",
-    "types/**/*"
-  ]
+  "include": ["app/**/*", "tests/**/*", "types/**/*"]
 }

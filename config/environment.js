@@ -5,8 +5,8 @@ module.exports = function (environment) {
     modulePrefix: 'flimmerkasten-client',
     podModulePrefix: 'flimmerkasten-client/routes',
     environment,
-    rootURL: process.env.EMBER_CLI_ELECTRON ? '' : '/',
-    locationType: process.env.EMBER_CLI_ELECTRON ? 'hash' : 'auto',
+    rootURL: '/',
+    locationType: 'auto',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
