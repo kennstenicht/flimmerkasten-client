@@ -5,7 +5,6 @@ import RouterService from '@ember/routing/router-service';
 import { registerDestructor } from '@ember/destroyable';
 import { tracked } from 'tracked-built-ins';
 import { restartableTask, timeout } from 'ember-concurrency';
-import { taskFor } from 'ember-concurrency-ts';
 import Peer, { DataConnection } from 'peerjs';
 
 // const { ipcRenderer } = require('electron');
@@ -41,7 +40,7 @@ export default class PeerService extends Service {
 
     // ipcRenderer.on('display-data', this.setDisplayData);
 
-    taskFor(this.createPeerConnection).perform();
+    this.createPeerConnection.perform();
 
     registerDestructor(this, () => {
       this.peer?.destroy();
@@ -51,7 +50,7 @@ export default class PeerService extends Service {
   // Actions
   @action
   onConnectionClose() {
-    taskFor(this.createDataConnection).perform();
+    this.createDataConnection.perform();
   }
 
   @action
@@ -87,11 +86,11 @@ export default class PeerService extends Service {
     switch (error.type) {
       case 'peer-unavailable':
       case 'socket-closed':
-        taskFor(this.createDataConnection).perform();
+        this.createDataConnection.perform();
         break;
 
       case 'server-error':
-        taskFor(this.retryPeerConnection).perform();
+        this.retryPeerConnection.perform();
         break;
     }
 
@@ -102,7 +101,7 @@ export default class PeerService extends Service {
   onPeerOpen(id: string) {
     this.id = id;
 
-    taskFor(this.createDataConnection).perform();
+    this.createDataConnection.perform();
   }
 
   @action
@@ -111,8 +110,7 @@ export default class PeerService extends Service {
   }
 
   // Tasks
-  @restartableTask
-  *createDataConnection() {
+  createDataConnection = restartableTask(async () => {
     this.state = 'Connecting...';
     if (!this.peer) {
       return;
@@ -131,10 +129,9 @@ export default class PeerService extends Service {
     this.dataConnection.on('close', this.onConnectionClose);
     this.dataConnection.on('open', this.onConnectionOpen);
     this.dataConnection.on('data', this.onConnectionData);
-  }
+  });
 
-  @restartableTask
-  *createPeerConnection() {
+  createPeerConnection = restartableTask(async () => {
     this.state = 'Connecting...';
 
     this.peer = new Peer(undefined, {
@@ -144,12 +141,11 @@ export default class PeerService extends Service {
 
     this.peer.on('error', this.onPeerError);
     this.peer.on('open', this.onPeerOpen);
-  }
+  });
 
-  @restartableTask
-  *retryPeerConnection() {
-    yield timeout(10000);
+  retryPeerConnection = restartableTask(async () => {
+    await timeout(10000);
 
-    taskFor(this.createPeerConnection).perform();
-  }
+    this.createPeerConnection.perform();
+  });
 }
