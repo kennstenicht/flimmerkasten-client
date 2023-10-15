@@ -1,8 +1,5 @@
-import Ember from 'ember';
+import 'ember-source/types';
 
-declare global {
-  interface Array<T> extends Ember.ArrayPrototypeExtensions<T> {}
-  // interface Function extends Ember.FunctionPrototypeExtensions {}
-}
+declare global {}
 
 export {};
