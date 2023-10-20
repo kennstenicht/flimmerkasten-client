@@ -33,6 +33,7 @@ module.exports = {
         './.template-lintrc.js',
         './ember-cli-build.js',
         './testem.js',
+        './postcss.config.js',
         './blueprints/*/index.js',
         './config/**/*.js',
         './lib/*/index.js',

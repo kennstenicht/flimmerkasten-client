@@ -19,7 +19,7 @@ figure,
 hr,
 table,
 fieldset {
-  margin-bottom: spacing('base');
+  margin-bottom: var(--spacing-base);
 }
 
 
@@ -29,5 +29,5 @@ fieldset {
 */
 
 dd, ol, ul {
-  margin-left: spacing('base');
+  margin-left: var(--spacing-base);
 }

@@ -1,0 +1,43 @@
+/* ==========================================================================
+   # STATUS MONITOR
+   ========================================================================== */
+
+.scope {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.container {
+  padding: --var(--spacing-large);
+  max-width: 700px;
+}
+
+.display-id {
+  margin: 0;
+}
+
+.status {
+  font-family: var(--font-family-decoration);
+  font-size: var(--font-size-h3);
+}
+
+.message {
+  margin-bottom: --var(--spacing-large);
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+.label {
+  font-weight: bold;
+  text-align: left;
+}
+
+.value {
+  text-align: right;
+}

@@ -1,33 +1,42 @@
-import { helper } from '@ember/component/helper';
-import { isEmpty } from '@ember/utils';
-import { isArray } from '@ember/array';
-
-interface Modifiers {
-  modifiers: {
-    [key: string]: string
-  }
+interface ClassNames {
+  [className: string]: string;
 }
 
-export function bem(params: [string, string], { modifiers }: Modifiers) {
-  let [block, element] = params;
-  let classes: string[] = [];
-  let baseClass = !isEmpty(element) ? `${block}__${element}` : block;
+interface Modifiers {
+  [key: string]: string | boolean | undefined | string[];
+}
 
-  classes.push(baseClass);
+export function bem(
+  module: ClassNames,
+  element?: string | Modifiers,
+  modifiers?: Modifiers,
+) {
+  if (typeof element === 'object') {
+    modifiers = element;
+    element = undefined;
+  }
+
+  const baseClass = !element ? 'scope' : element;
+
+  if (!module) {
+    return '';
+  }
+
+  const classes: string[] = [baseClass];
 
   if (modifiers) {
     Object.keys(modifiers).forEach((key) => {
-      let modifier = modifiers[key];
+      const modifier = modifiers?.[key];
 
-      if (isEmpty(modifier)) {
-        return
+      if (!modifier) {
+        return;
       }
+
       if (typeof modifier === 'boolean') {
         if (modifier) {
           classes.push(`${baseClass}--${key}`);
         }
-      } else if (isArray(modifier)) {
-        // @ts-ignore
+      } else if (Array.isArray(modifier)) {
         modifier.forEach((modifier) => {
           classes.push(`${baseClass}--${key}-${modifier}`);
         });
@@ -37,8 +46,7 @@ export function bem(params: [string, string], { modifiers }: Modifiers) {
     });
   }
 
-  return classes.join(' ');
+  return classes.map((className) => module[className]).join(' ');
 }
 
-export default helper(bem);
-
+export default bem;

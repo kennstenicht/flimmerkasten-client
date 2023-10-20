@@ -17,17 +17,15 @@
 html {
   overflow-y: scroll; /* [2] */
   min-height: 100%; /* [3] */
-  font-size: ($font-size / 16px) * 1em; /* [1] */
-  line-height: $baseline * (4 / $font-size); /* [1] */
 }
 
 body {
   overflow: auto;
   min-height: 100%;
-  background-color: $color-black;
-  color: $color-white;
-  letter-spacing: $letter-spacing;
-  font-family: $font-family;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  letter-spacing: var(--letter-spacing);
+  font-family: var(--font-family);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
 }
