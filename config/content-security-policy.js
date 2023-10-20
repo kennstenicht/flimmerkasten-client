@@ -16,8 +16,9 @@ module.exports = function (environment) {
       'frame-src': ["'self'",'*'],
       'connect-src': [
         "'self'",
-        'https://flimmerkasten.herokuapp.com/',
-        'wss://flimmerkasten.herokuapp.com/'
+        'https://0.peerjs.com',
+        'wss://flimmerkasten.herokuapp.com/',
+        '*'
       ],
       'img-src': ['data:', "'self'"],
       'style-src': [

@@ -86,7 +86,7 @@ export default class PeerService extends Service {
     switch (error.type) {
       case 'peer-unavailable':
       case 'socket-closed':
-        this.createDataConnection.perform();
+        this.retryPeerConnection.perform();
         break;
 
       case 'server-error':
@@ -100,6 +100,7 @@ export default class PeerService extends Service {
   @action
   onPeerOpen(id: string) {
     this.id = id;
+    this.message = '';
 
     this.createDataConnection.perform();
   }
@@ -134,10 +135,7 @@ export default class PeerService extends Service {
   createPeerConnection = restartableTask(async () => {
     this.state = 'Connecting...';
 
-    this.peer = new Peer(undefined, {
-      host: 'flimmerkasten.herokuapp.com',
-      secure: true,
-    });
+    this.peer = new Peer();
 
     this.peer.on('error', this.onPeerError);
     this.peer.on('open', this.onPeerOpen);
