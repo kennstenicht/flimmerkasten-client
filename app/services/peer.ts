@@ -6,18 +6,7 @@ import { registerDestructor } from '@ember/destroyable';
 import { tracked } from 'tracked-built-ins';
 import { restartableTask, timeout } from 'ember-concurrency';
 import Peer, { DataConnection } from 'peerjs';
-
-// const { ipcRenderer } = require('electron');
-
-interface Display {
-  id: string;
-  bounds: {
-    width: number;
-    height: number;
-    x: number;
-    y: number;
-  };
-}
+import { appWindow, currentMonitor, Monitor } from '@tauri-apps/api/window';
 
 export default class PeerService extends Service {
   // Services
@@ -25,7 +14,7 @@ export default class PeerService extends Service {
 
   // Defaults
   dataConnection?: DataConnection;
-  @tracked display?: Display;
+  @tracked monitor?: Monitor | null;
   @tracked id?: string;
   @tracked message?: string;
   @tracked state?: string;
@@ -38,7 +27,13 @@ export default class PeerService extends Service {
   constructor() {
     super(...arguments);
 
-    // ipcRenderer.on('display-data', this.setDisplayData);
+    appWindow.maximize().catch((error) => console.log(error));
+
+    currentMonitor()
+      .then((monitor) => {
+        this.monitor = monitor;
+      })
+      .catch((error) => console.log(error));
 
     this.createPeerConnection.perform();
 
@@ -86,7 +81,7 @@ export default class PeerService extends Service {
     switch (error.type) {
       case 'peer-unavailable':
       case 'socket-closed':
-        this.retryPeerConnection.perform();
+        this.retryDataConnection.perform();
         break;
 
       case 'server-error':
@@ -105,14 +100,9 @@ export default class PeerService extends Service {
     this.createDataConnection.perform();
   }
 
-  @action
-  setDisplayData(_event: Event, display: Display) {
-    this.display = display;
-  }
-
   // Tasks
   createDataConnection = restartableTask(async () => {
-    this.state = 'Connecting...';
+    this.state = 'Create data connection...';
     if (!this.peer) {
       return;
     }
@@ -123,7 +113,7 @@ export default class PeerService extends Service {
           width: window.innerWidth,
           height: window.innerHeight,
         },
-        display: this.display,
+        monitor: this.monitor,
       },
     });
 
@@ -133,7 +123,7 @@ export default class PeerService extends Service {
   });
 
   createPeerConnection = restartableTask(async () => {
-    this.state = 'Connecting...';
+    this.state = 'Connecting to peer...';
 
     this.peer = new Peer();
 
@@ -145,5 +135,11 @@ export default class PeerService extends Service {
     await timeout(10000);
 
     this.createPeerConnection.perform();
+  });
+
+  retryDataConnection = restartableTask(async () => {
+    await timeout(10000);
+
+    this.createDataConnection.perform();
   });
 }

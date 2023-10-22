@@ -21,6 +21,7 @@
     "lint:js": "eslint . --cache",
     "lint:js:fix": "eslint . --fix",
     "start": "ember serve",
+    "tauri": "tauri",
     "test": "concurrently \"npm:lint\" \"npm:test:*\" --names \"lint,test:\"",
     "test:ember": "ember test"
   },
@@ -36,6 +37,8 @@
     "@embroider/webpack": "^3.2.0",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
+    "@tauri-apps/api": "^1.5.1",
+    "@tauri-apps/cli": "^1.5.5",
     "@types/rsvp": "^4.0.4",
     "autoprefixer": "^10.4.16",
     "broccoli-asset-rev": "^3.0.0",

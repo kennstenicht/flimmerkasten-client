@@ -17,7 +17,7 @@ export default class StatusMonitor extends Component<StatusMonitorSignature> {
     <div class={{bem styles}} ...attributes>
       <div class={{bem styles 'container'}}>
         <h1 class={{bem styles 'display-id'}}>
-          {{this.peer.display.id}}
+          {{this.peer.monitor.name}}
         </h1>
 
         <div class={{bem styles 'status'}}>
@@ -39,13 +39,13 @@ export default class StatusMonitor extends Component<StatusMonitorSignature> {
             Screen Width
           </div>
           <div class={{bem styles 'value'}}>
-            {{this.peer.display.bounds.width}}
+            {{this.peer.monitor.size.width}}
           </div>
           <div class={{bem styles 'label'}}>
             Screen Height
           </div>
           <div class={{bem styles 'value'}}>
-            {{this.peer.display.bounds.height}}
+            {{this.peer.monitor.size.height}}
           </div>
         </div>
       </div>
