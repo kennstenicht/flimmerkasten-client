@@ -57,9 +57,9 @@
   /* Shades of grey */
   --color-grey-lighter: #fbfbfb;
   --color-grey-light: #f6f6f6;
-  --color-grey: #e9e9e9;
-  --color-grey-dark: #bdbdbd;
-  --color-grey-darker: #14120f;
+  --color-grey: #36373b;
+  --color-grey-dark: #26272b;
+  --color-grey-darker: #16171b;
 
   /* State colors */
   --color-error: #f5633e;

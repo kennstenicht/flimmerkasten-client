@@ -10,4 +10,5 @@ Router.map(function () {
   this.route('iframe');
   this.route('status', { path: '/' });
   this.route('stream');
+  this.route('setup');
 });
