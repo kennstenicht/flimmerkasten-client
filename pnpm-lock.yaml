@@ -131,6 +131,9 @@ devDependencies:
   ember-resolver:
     specifier: ^11.0.1
     version: 11.0.1(ember-source@5.3.0)
+  ember-route-template:
+    specifier: ^1.0.1
+    version: 1.0.1
   ember-source:
     specifier: ~5.3.0
     version: 5.3.0(@babel/core@7.23.2)(@glimmer/component@1.1.2)(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.89.0)
@@ -6557,6 +6560,14 @@ packages:
 
   /ember-rfc176-data@0.3.18:
     resolution: {integrity: sha512-JtuLoYGSjay1W3MQAxt3eINWXNYYQliK90tLwtb8aeCuQK8zKGCRbBodVIrkcTqshULMnRuTOS6t1P7oQk3g6Q==}
+    dev: true
+
+  /ember-route-template@1.0.1:
+    resolution: {integrity: sha512-zk8eePt+vjigiY7bawTpa5O/HPPXjPAxlPsk37LYSN+uiVrRAFcuq72oTggMfwIZfVZk+gqUAvlaUQBljSMTaw==}
+    dependencies:
+      '@embroider/addon-shim': 1.8.6
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /ember-router-generator@2.0.0:
