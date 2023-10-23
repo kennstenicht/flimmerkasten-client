@@ -56,10 +56,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 576,
         "resizable": true,
         "title": "Flimmerkasten",
-        "width": 800
+        "width": 720
       }
     ]
   }

@@ -1,0 +1,10 @@
+.scope {
+  display: flex;
+  gap: var(--spacing-small);
+}
+
+.game {
+  border: 1px solid var(--color-white);
+  width: 200px;
+  height: 400px;
+}

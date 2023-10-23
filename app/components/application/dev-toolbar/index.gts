@@ -7,6 +7,8 @@ import styles from './styles.css';
     <ul class={{bem styles 'list'}}>
       <li><LinkTo @route='status'>Status</LinkTo></li>
       <li><LinkTo @route='setup'>Setup</LinkTo></li>
+      <li><LinkTo @route='modes.iframe'>IFrame</LinkTo></li>
+      <li><LinkTo @route='modes.tetris'>Tetris</LinkTo></li>
     </ul>
   </nav>
 </template>
