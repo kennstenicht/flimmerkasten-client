@@ -6,7 +6,7 @@ import { registerDestructor } from '@ember/destroyable';
 import { tracked } from 'tracked-built-ins';
 import { restartableTask, timeout } from 'ember-concurrency';
 import Peer, { DataConnection } from 'peerjs';
-import { appWindow, currentMonitor, Monitor } from '@tauri-apps/api/window';
+import { currentMonitor, Monitor } from '@tauri-apps/api/window';
 
 export default class PeerService extends Service {
   // Services
@@ -18,7 +18,7 @@ export default class PeerService extends Service {
   @tracked id?: string;
   @tracked message?: string;
   @tracked state?: string;
-  @tracked settings: any = {
+  @tracked settings = {
     iframeSrc: 'https://ag-prop.com',
   };
   peer?: Peer;
@@ -27,7 +27,7 @@ export default class PeerService extends Service {
   constructor() {
     super(...arguments);
 
-    appWindow.maximize().catch((error) => console.log(error));
+    // appWindow.maximize().catch((error) => console.log(error));
 
     currentMonitor()
       .then((monitor) => {
@@ -50,10 +50,10 @@ export default class PeerService extends Service {
 
   @action
   onConnectionData(data: any) {
-    let actions = data.split(';');
+    const actions = data.split(';');
 
     actions.forEach((action: any) => {
-      let [actionName, actionValue] = action.split('=');
+      const [actionName, actionValue] = action.split('=');
 
       switch (actionName) {
         case 'transitionTo':

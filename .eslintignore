@@ -8,6 +8,7 @@
 /coverage/
 !.*
 .*/
+/config/deprecation-workflow.js
 
 # ember-try
 /.node_modules.ember-try/

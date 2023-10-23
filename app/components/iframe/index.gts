@@ -5,7 +5,7 @@ import bem from 'flimmerkasten-client/helpers/bem';
 import styles from './styles.css';
 
 interface IframeSignature {
-  Element: HTMLIframeElement;
+  Element: HTMLIFrameElement;
 }
 
 export default class Iframe extends Component<IframeSignature> {

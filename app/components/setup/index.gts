@@ -14,15 +14,16 @@ export default class Setup extends Component<SetupSignature> {
 
   // Functions
   createQrCode = modifier((element) => {
-    QRCode.toCanvas(element, this.peer.id, {
-      margin: 1,
-      width: window.innerHeight,
-      height: window.innerHeight,
-      color: {
-        dark: '#ffffffff',
-        light: '#16171bff',
-      },
-    });
+    if (this.peer.id) {
+      QRCode.toCanvas(element, this.peer.id, {
+        margin: 1,
+        width: window.innerHeight,
+        color: {
+          dark: '#ffffffff',
+          light: '#16171bff',
+        },
+      });
+    }
   });
 
   // Template

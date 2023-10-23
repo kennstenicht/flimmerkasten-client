@@ -2,7 +2,7 @@
 
 module.exports = {
   root: true,
-  parser: '@babel/eslint-parser',
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -13,7 +13,7 @@ module.exports = {
       ],
     },
   },
-  plugins: ['ember'],
+  plugins: ['ember', '@typescript-eslint', 'prettier'],
   extends: [
     'eslint:recommended',
     'plugin:ember/recommended',
@@ -27,13 +27,13 @@ module.exports = {
     // node files
     {
       files: [
+        './postcss.config.js',
         './.eslintrc.js',
         './.prettierrc.js',
         './.stylelintrc.js',
         './.template-lintrc.js',
         './ember-cli-build.js',
         './testem.js',
-        './postcss.config.js',
         './blueprints/*/index.js',
         './config/**/*.js',
         './lib/*/index.js',

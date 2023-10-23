@@ -3,6 +3,7 @@
    ========================================================================== */
 
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=Poppins:ital,wght@0,300;0,400;0,700;0,800;1,300;1,400;1,700;1,800&display=swap");
+
 :root {
   /* Spacing
   =========================================================================== */
@@ -45,14 +46,14 @@
   --letter-spacing-large: 0.3rem;
 
   /* Font family */
-  --font-family: "IBM Plex Mono", Courier, monospace;
+  --font-family: "IBM Plex Mono", courier, monospace;
 
   /* Color
   =========================================================================== */
 
   /* Main colors */
   --color-black: #16171b;
-  --color-white: #ffffff;
+  --color-white: #fff;
 
   /* Shades of grey */
   --color-grey-lighter: #fbfbfb;
@@ -68,6 +69,7 @@
 
   /* Objects
   ========================================================================== */
+
   /* Object Wrapper */
   --wrapper-width-small: 1100px;
   --wrapper-width: 1700px;
