@@ -36,7 +36,7 @@ export default class Tetris extends Component<SetupSignature> {
           <p>Level: {{this.level}}</p>
           <canvas class={{bem styles 'preview'}}></canvas>
         </div>
-        <button {{on 'click' this.play}}>Play</button>
+        <button {{on 'click' this.play}} type='button'>Play</button>
       </div>
     </div>
   </template>
