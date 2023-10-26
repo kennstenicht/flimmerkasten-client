@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "flimmerkasten",
-    "version": "0.1.4"
+    "version": "0.1.5"
   },
   "tauri": {
     "allowlist": {
@@ -40,7 +40,7 @@
       },
       "resources": [],
       "shortDescription": "",
-      "targets": "all",
+      "targets": ["deb"],
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
