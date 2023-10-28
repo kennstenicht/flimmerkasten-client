@@ -1,10 +1,12 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
+import { modifier } from 'ember-modifier';
 import QRCode from 'qrcode';
 import PeerService from 'flimmerkasten-client/services/peer';
-import { modifier } from 'ember-modifier';
+import bem from 'flimmerkasten-client/helpers/bem';
+import styles from './styles.css';
 
-interface SetupSignature {
+interface SetupCodeSignature {
   Element: HTMLCanvasElement;
 }
 
@@ -21,17 +23,19 @@ const createQrCode = modifier((element, [data]: [string]) => {
   }
 });
 
-export default class Setup extends Component<SetupSignature> {
+export default class SetupCode extends Component<SetupCodeSignature> {
   // Services
   @service declare peer: PeerService;
 
   // Template
   <template>
-    {{#if this.peer.id}}
-      <canvas {{createQrCode this.peer.id}} ...attributes>
-      </canvas>
-    {{else}}
-      <h1>{{this.peer.state}}</h1>
-    {{/if}}
+    <div class={{bem styles}}>
+      {{#if this.peer.id}}
+        <canvas {{createQrCode this.peer.id}} ...attributes>
+        </canvas>
+      {{else}}
+        <h1>{{this.peer.state}}</h1>
+      {{/if}}
+    </div>
   </template>
 }

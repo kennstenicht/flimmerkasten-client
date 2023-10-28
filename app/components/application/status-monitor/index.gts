@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import PeerService from 'flimmerkasten-client/services/peer';
 import { bem } from 'flimmerkasten-client/helpers/bem';
+import PeerService from 'flimmerkasten-client/services/peer';
 import styles from './styles.css';
 
 interface StatusMonitorSignature {
@@ -15,7 +15,7 @@ export default class StatusMonitor extends Component<StatusMonitorSignature> {
   // Template
   <template>
     <div class={{bem styles}} ...attributes>
-      <h1 class={{bem styles 'monitor'}}>
+      <h1 class={{bem styles 'monitor-name'}}>
         {{this.peer.monitor.name}}
       </h1>
 

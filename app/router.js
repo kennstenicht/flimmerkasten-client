@@ -7,11 +7,7 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function () {
-  this.route('status', { path: '/' });
-  this.route('setup');
-  this.route('modes', function () {
-    this.route('iframe');
-    this.route('stream');
-    this.route('tetris');
-  });
+  this.route('iframe');
+  this.route('stream', { path: '/' });
+  this.route('tetris');
 });

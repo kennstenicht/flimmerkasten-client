@@ -1,0 +1,15 @@
+/* ==========================================================================
+   # UI / BUTTON
+   ========================================================================== */
+
+.scope {
+  border: 0;
+}
+
+.scope--variant-primary {
+  background: var(--color-error);
+}
+
+.scope--variant-active {
+  background: var(--color-success);
+}

@@ -1,14 +1,15 @@
 /* ==========================================================================
-   # STATUS MONITOR
+   # APPLICATION / STATUS MONITOR
    ========================================================================== */
 
 .scope {
-  text-align: center;
-  padding: var(--spacing-large);
-  max-width: 700px;
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-grey-dark);
+  padding: var(--spacing-base);
 }
 
-.monitor {
+.monitor-name {
   margin: 0;
   margin-bottom: var(--spacing-base);
 }

@@ -8,3 +8,29 @@
   align-items: center;
   height: 100vh;
 }
+
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  z-index: 10;
+}
+
+.toolbar:hover {
+  opacity: 1;
+}
+
+.content {
+  display: flex;
+  padding: var(--spacing-small) var(--spacing-base);
+  background-color: var(--color-grey-dark);
+  border-bottom: 1px solid var(--color-grey);
+  gap: var(--spacing-tiny);
+}
+
+.spacer {
+  flex-grow: 1;
+}
