@@ -3,6 +3,7 @@
 
 # compiled output
 /dist/
+/src-tauri/target/
 
 # addons
 /.node_modules.ember-try/

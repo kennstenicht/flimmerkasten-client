@@ -3,6 +3,7 @@
 
 # compiled output
 /dist/
+/src-tauri/target/
 
 # misc
 /coverage/
