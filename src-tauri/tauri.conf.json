@@ -59,7 +59,16 @@
         "height": 576,
         "resizable": true,
         "title": "Flimmerkasten",
-        "width": 720
+        "width": 720,
+        "label": "flimmerkasten-1"
+      },
+      {
+        "fullscreen": false,
+        "height": 576,
+        "resizable": true,
+        "title": "Flimmerkasten",
+        "width": 720,
+        "label": "flimmerkasten-2"
       }
     ]
   }
