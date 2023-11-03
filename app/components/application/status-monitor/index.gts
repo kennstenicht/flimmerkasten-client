@@ -1,7 +1,9 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
+
 import { bem } from 'flimmerkasten-client/helpers/bem';
 import PeerService from 'flimmerkasten-client/services/peer';
+
 import styles from './styles.css';
 
 interface StatusMonitorSignature {
@@ -16,35 +18,41 @@ export default class StatusMonitor extends Component<StatusMonitorSignature> {
   <template>
     <div class={{bem styles}} ...attributes>
       <h1 class={{bem styles 'monitor-name'}}>
-        {{this.peer.monitor.name}}
+        {{this.peer.object.id}}
       </h1>
 
       <div class={{bem styles 'status'}}>
-        {{this.peer.state}}
+        {{if this.peer.isOpen 'Open' 'Connecting...'}}
       </div>
 
       <div class={{bem styles 'message'}}>
-        {{this.peer.message}}
+        {{this.peer.errorMessage}}
       </div>
 
       <div class={{bem styles 'meta'}}>
         <div class={{bem styles 'label'}}>
-          Peer ID:
+          Peer Id:
         </div>
         <div class={{bem styles 'value'}}>
-          {{this.peer.id}}
+          {{this.peer.object.id}}
+        </div>
+        <div class={{bem styles 'label'}}>
+          Monitor:
+        </div>
+        <div class={{bem styles 'value'}}>
+          {{this.peer.monitor.name}}
         </div>
         <div class={{bem styles 'label'}}>
           Screen Width
         </div>
         <div class={{bem styles 'value'}}>
-          {{this.peer.monitor.size.width}}
+          {{window.innerWidth}}
         </div>
         <div class={{bem styles 'label'}}>
           Screen Height
         </div>
         <div class={{bem styles 'value'}}>
-          {{this.peer.monitor.size.height}}
+          {{window.innerHeight}}
         </div>
       </div>
     </div>

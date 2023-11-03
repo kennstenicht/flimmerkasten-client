@@ -5,8 +5,8 @@
 .scope {
   position: fixed;
   inset: 0;
-  background-color: var(--color-grey-dark);
-  padding: var(--spacing-base);
+  background-color: var(--color-grey-darker);
+  padding: var(--spacing-huge);
 }
 
 .monitor-name {

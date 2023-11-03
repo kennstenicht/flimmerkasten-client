@@ -1,5 +1,7 @@
 import { LinkTo } from '@ember/routing';
+
 import { bem } from 'flimmerkasten-client/helpers/bem';
+
 import styles from './styles.css';
 
 <template>

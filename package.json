@@ -31,6 +31,7 @@
     "@babel/eslint-parser": "^7.22.15",
     "@babel/plugin-proposal-decorators": "^7.23.2",
     "@ember/optional-features": "^2.0.0",
+    "@ember/render-modifiers": "^2.1.0",
     "@ember/string": "^3.1.1",
     "@ember/test-helpers": "^3.2.0",
     "@embroider/compat": "^3.2.3",
@@ -46,6 +47,7 @@
     "@tauri-apps/cli": "^1.5.5",
     "@types/qrcode": "^1.5.4",
     "@types/rsvp": "^4.0.6",
+    "@types/uuid": "^9.0.6",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "autoprefixer": "^10.4.16",
     "broccoli-asset-rev": "^3.0.0",
@@ -95,6 +97,7 @@
     "tracked-built-ins": "^3.3.0",
     "type-css-modules": "^1.0.2",
     "typescript": "^4.9.5",
+    "uuid": "^9.0.1",
     "webpack": "^5.89.0"
   },
   "engines": {

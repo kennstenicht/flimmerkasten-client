@@ -5,5 +5,8 @@
 .scope {
   position: fixed;
   inset: 0;
-  background-color: var(--color-grey-dark);
+  background-color: var(--color-grey-darker);
+  display: grid;
+  align-items: center;
+  justify-content: center;
 }

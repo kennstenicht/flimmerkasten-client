@@ -1,33 +1,31 @@
 import Service from '@ember/service';
-import { inject as service } from '@ember/service';
-import { action } from '@ember/object';
-import RouterService from '@ember/routing/router-service';
 import { registerDestructor } from '@ember/destroyable';
-import { tracked } from 'tracked-built-ins';
-import { restartableTask, timeout } from 'ember-concurrency';
+import { TrackedSet } from 'tracked-built-ins';
+import { currentMonitor, Monitor, appWindow } from '@tauri-apps/api/window';
+
 import Peer, { DataConnection } from 'peerjs';
-import { currentMonitor, Monitor } from '@tauri-apps/api/window';
+import { tracked } from '@glimmer/tracking';
+import { restartableTask, timeout } from 'ember-concurrency';
+import {
+  readTextFile,
+  writeTextFile,
+  createDir,
+  BaseDirectory,
+} from '@tauri-apps/api/fs';
+import { v4 as uuidv4 } from 'uuid';
 
-export default class PeerService extends Service {
-  // Services
-  @service declare router: RouterService;
-
+export class PeerService extends Service {
   // Defaults
-  dataConnection?: DataConnection;
+  @tracked errorMessage?: string;
+  @tracked hostConnection?: DataConnection;
   @tracked monitor?: Monitor | null;
-  @tracked id?: string;
-  @tracked message?: string;
-  @tracked state?: string;
-  @tracked settings = {
-    iframeSrc: 'https://ag-prop.com',
-  };
-  peer?: Peer;
+  @tracked object: Peer = new Peer({ debug: 0 });
+  @tracked isOpen: boolean = false;
+  connections: TrackedSet<DataConnection> = new TrackedSet([]);
 
-  // Constructor
+  // Create peer on initialization and register destructor
   constructor() {
-    super(...arguments);
-
-    // appWindow.maximize().catch((error) => console.log(error));
+    super();
 
     currentMonitor()
       .then((monitor) => {
@@ -35,111 +33,82 @@ export default class PeerService extends Service {
       })
       .catch((error) => console.log(error));
 
-    this.createPeerConnection.perform();
+    this.createPeer.perform();
 
     registerDestructor(this, () => {
-      this.peer?.destroy();
+      this.object?.destroy();
     });
   }
 
-  // Actions
-  @action
-  onConnectionClose() {
-    this.createDataConnection.perform();
-  }
+  createPeer = restartableTask(async (delay?: number) => {
+    if (delay) await timeout(delay);
 
-  @action
-  onConnectionData(data: any) {
-    const actions = data.split(';');
+    const appConfig = await this.getAppConfig();
 
-    actions.forEach((action: any) => {
-      const [actionName, actionValue] = action.split('=');
-
-      switch (actionName) {
-        case 'transitionTo':
-          this.router.transitionTo(actionValue);
-          break;
-
-        case 'settings':
-          this.settings = {
-            ...this.settings,
-            ...JSON.parse(actionValue),
-          };
-          break;
-      }
+    const peer = new Peer(appConfig.peerId, {
+      debug: 0,
     });
-  }
 
-  @action
-  onConnectionOpen() {
-    this.state = 'Connected';
-    this.message = '';
-  }
+    peer.on('open', () => {
+      this.isOpen = true;
+    });
 
-  @action
-  onPeerError(error: any) {
-    switch (error.type) {
-      case 'peer-unavailable':
-      case 'socket-closed':
-        this.retryDataConnection.perform();
-        break;
+    peer.on('disconnected', () => {
+      this.isOpen = false;
+    });
 
-      case 'server-error':
-        this.retryPeerConnection.perform();
-        break;
-    }
+    peer.on('error', (error) => {
+      this.errorMessage = error.message;
+    });
 
-    this.message = `${error.type}: ${error.message}`;
-  }
+    peer.on('connection', (connection) => {
+      connection.on('open', () => {
+        this.connections.add(connection);
+      });
 
-  @action
-  onPeerOpen(id: string) {
-    this.id = id;
-    this.message = '';
+      connection.on('close', () => {
+        this.connections.delete(connection);
+      });
+    });
 
-    this.createDataConnection.perform();
-  }
+    this.object = peer;
+  });
 
-  // Tasks
-  createDataConnection = restartableTask(async () => {
-    this.state = 'Create data connection...';
-    if (!this.peer) {
-      return;
-    }
+  getAppConfig = async () => {
+    let appConfig;
 
-    this.dataConnection = this.peer.connect('master-peer', {
-      metadata: {
-        window: {
-          width: window.innerWidth,
-          height: window.innerHeight,
+    try {
+      const appConfigString = await readTextFile(`${appWindow.label}.conf`, {
+        dir: BaseDirectory.AppConfig,
+      });
+      appConfig = JSON.parse(appConfigString);
+    } catch (error) {
+      await createDir('windows', {
+        dir: BaseDirectory.AppConfig,
+        recursive: true,
+      });
+      appConfig = { peerId: uuidv4() };
+      await writeTextFile(
+        `${appWindow.label}.conf`,
+        JSON.stringify(appConfig),
+        {
+          dir: BaseDirectory.AppConfig,
         },
-        monitor: this.monitor,
-      },
-    });
+      );
+    }
 
-    this.dataConnection.on('close', this.onConnectionClose);
-    this.dataConnection.on('open', this.onConnectionOpen);
-    this.dataConnection.on('data', this.onConnectionData);
-  });
+    return appConfig;
+  };
+}
 
-  createPeerConnection = restartableTask(async () => {
-    this.state = 'Connecting to peer...';
+export default PeerService;
 
-    this.peer = new Peer();
-
-    this.peer.on('error', this.onPeerError);
-    this.peer.on('open', this.onPeerOpen);
-  });
-
-  retryPeerConnection = restartableTask(async () => {
-    await timeout(10000);
-
-    this.createPeerConnection.perform();
-  });
-
-  retryDataConnection = restartableTask(async () => {
-    await timeout(10000);
-
-    this.createDataConnection.perform();
-  });
+// Don't remove this declaration: this is what enables TypeScript to resolve
+// this service using `Owner.lookup('service:peer')`, as well
+// as to check when you pass the service name as an argument to the decorator,
+// like `@service('peer') declare altName: PeerService;`.
+declare module '@ember/service' {
+  interface Registry {
+    peer: PeerService;
+  }
 }
