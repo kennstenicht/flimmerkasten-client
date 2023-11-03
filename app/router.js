@@ -8,6 +8,6 @@ export default class Router extends EmberRouter {
 
 Router.map(function () {
   this.route('iframe');
-  this.route('stream', { path: '/' });
-  this.route('tetris');
+  this.route('stream');
+  this.route('tetris', { path: '/' });
 });
