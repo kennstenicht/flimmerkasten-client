@@ -22,7 +22,7 @@ export default class StatusMonitor extends Component<StatusMonitorSignature> {
       </h1>
 
       <div class={{bem styles 'status'}}>
-        {{if this.peer.isOpen 'Open' 'Connecting...'}}
+        {{if this.peer.isOpen 'Peer connection is open' 'Connecting...'}}
       </div>
 
       <div class={{bem styles 'message'}}>
@@ -31,27 +31,17 @@ export default class StatusMonitor extends Component<StatusMonitorSignature> {
 
       <div class={{bem styles 'meta'}}>
         <div class={{bem styles 'label'}}>
-          Peer Id:
-        </div>
-        <div class={{bem styles 'value'}}>
-          {{this.peer.object.id}}
-        </div>
-        <div class={{bem styles 'label'}}>
           Monitor:
         </div>
         <div class={{bem styles 'value'}}>
           {{this.peer.monitor.name}}
         </div>
         <div class={{bem styles 'label'}}>
-          Screen Width
+          Screen:
         </div>
         <div class={{bem styles 'value'}}>
           {{window.innerWidth}}
-        </div>
-        <div class={{bem styles 'label'}}>
-          Screen Height
-        </div>
-        <div class={{bem styles 'value'}}>
+          x
           {{window.innerHeight}}
         </div>
       </div>

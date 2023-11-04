@@ -3,8 +3,7 @@
    ========================================================================== */
 
 h1 {
-  letter-spacing: var(--letter-spacing-large);
-  line-height: 0.9;
+  line-height: 1;
   font-size: var(--font-size-h1);
 }
 

@@ -24,6 +24,7 @@ body {
   min-height: 100%;
   background-color: var(--color-black);
   color: var(--color-white);
+  font-size: var(--font-size);
   letter-spacing: var(--letter-spacing);
   font-family: var(--font-family);
   -moz-osx-font-smoothing: grayscale;

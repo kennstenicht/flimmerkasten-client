@@ -2,14 +2,14 @@
    # SETTINGS
    ========================================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=Poppins:ital,wght@0,300;0,400;0,700;0,800;1,300;1,400;1,700;1,800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
 :root {
   /* Spacing
   =========================================================================== */
 
   /* Baseline */
-  --baseline: 6px;
+  --baseline: 4px;
 
   /* Spacing */
   --spacing-tiny: calc(var(--baseline) * 1);
@@ -29,12 +29,11 @@
   =========================================================================== */
 
   /* Base font size */
-  --font-size: 16px;
-  --font-size-small: 14px;
-  --font-size-tiny: 12px;
+  --font-size: 12px;
+  --font-size-small: 10px;
 
   /* Heading sizes */
-  --font-size-h1: clamp(40px, 6.33vw, 76px);
+  --font-size-h1: 24px;
   --font-size-h2: 20px;
   --font-size-h3: 18px;
   --font-size-h4: 18px;
@@ -42,25 +41,25 @@
   --font-size-h6: 18px;
 
   /* Letter spacing */
-  --letter-spacing: 0rem;
-  --letter-spacing-large: 0.3rem;
+  --letter-spacing: 0.2rem;
+  --letter-spacing-large: 0.4rem;
 
   /* Font family */
-  --font-family: "IBM Plex Mono", courier, monospace;
+  --font-family: "Press Start 2P", monospace;
 
   /* Color
   =========================================================================== */
 
-  /* Main colors */
-  --color-black: #16171b;
-  --color-white: #fff;
-
   /* Shades of grey */
-  --color-grey-lighter: #fbfbfb;
-  --color-grey-light: #f6f6f6;
-  --color-grey: #36373b;
-  --color-grey-dark: #26272b;
-  --color-grey-darker: #16171b;
+  --color-grey-lighter: #c4cfa1;
+  --color-grey-light: #c4cfa1;
+  --color-grey: #8b956d;
+  --color-grey-dark: #6b7353;
+  --color-grey-darker: #414141;
+
+  /* Main colors */
+  --color-black: var(--color-grey-darker);
+  --color-white: var(--color-grey-light);
 
   /* State colors */
   --color-error: #f5633e;
