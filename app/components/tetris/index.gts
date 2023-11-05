@@ -19,12 +19,12 @@ import {
 } from './utils';
 import styles from './styles.css';
 
-interface TetrisSignature {
+export interface TetrisSignature {
   Element: HTMLDivElement;
   Args: {};
 }
 
-export default class Tetris extends Component<TetrisSignature> {
+export class Tetris extends Component<TetrisSignature> {
   // Services
   @service declare peer: PeerService;
 
@@ -37,7 +37,7 @@ export default class Tetris extends Component<TetrisSignature> {
   @tracked lines = 0;
   playfield = createBlankPlayfield();
   @tracked score = 0;
-  @tracked tetrominoSequence: (keyof typeof tetrominos)[] = generateSequence();
+  tetrominoSequence: (keyof typeof tetrominos)[] = generateSequence();
   tetromino: Tetromino = getNextTetromino(
     this.playfield,
     this.tetrominoSequence,
@@ -60,14 +60,15 @@ export default class Tetris extends Component<TetrisSignature> {
   listenToData = () => {
     this.connection.on('data', (data: string) => {
       switch (data) {
-        case 'tetris:play':
+        case 'tetris:play': {
           this.play();
           break;
+        }
 
         case 'tetris:left':
         case 'tetris:right':
         case 'tetris:up':
-        case 'tetris:down':
+        case 'tetris:down': {
           const tetrominoCopy = { ...this.tetromino };
 
           if (data === 'tetris:left') {
@@ -112,6 +113,7 @@ export default class Tetris extends Component<TetrisSignature> {
             this.tetromino = tetrominoCopy;
           }
           break;
+        }
       }
     });
 
@@ -195,7 +197,7 @@ export default class Tetris extends Component<TetrisSignature> {
     this.isGameOver = false;
     this.lines = 0;
     this.score = 0;
-    this.connection.send('tetris:play');
+    this.connection.send('tetris:playing');
     this.animationFrame = requestAnimationFrame(this.loop);
   };
 
@@ -254,3 +256,5 @@ export default class Tetris extends Component<TetrisSignature> {
     {{/if}}
   </template>
 }
+
+export default Tetris;

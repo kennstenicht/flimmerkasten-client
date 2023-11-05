@@ -1,15 +1,3 @@
-// color of each tetromino
-// export const colors: { [key: string | number]: string } = {
-//   0: 'transparent',
-//   I: 'rgb(123, 212, 212)',
-//   O: 'rgb(227, 227, 133)',
-//   T: 'rgb(140, 56, 140)',
-//   S: 'rgb(77, 136, 77)',
-//   Z: 'rgb(225, 83, 83)',
-//   J: 'rgb(88, 88, 215)',
-//   L: 'rgb(217, 166, 71)',
-// };
-
 export const colors: { [key: string | number]: string } = {
   0: 'transparent',
   I: '#8b956d',
@@ -21,8 +9,6 @@ export const colors: { [key: string | number]: string } = {
   L: '#22251b',
 };
 
-// how to draw each tetromino
-// @see https://tetris.fandom.com/wiki/SRS
 export const tetrominos = {
   I: [
     [0, 0, 0, 0],
