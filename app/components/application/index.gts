@@ -7,7 +7,6 @@ import { registerDestructor } from '@ember/destroyable';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 
 import { restartableTask } from 'ember-concurrency';
-// @ts-ignore
 import perform from 'ember-concurrency/helpers/perform';
 
 import ENV from 'flimmerkasten-client/config/environment';
