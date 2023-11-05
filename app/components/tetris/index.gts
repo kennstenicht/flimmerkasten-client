@@ -53,12 +53,12 @@ export class Tetris extends Component<TetrisSignature> {
   }
 
   get speed() {
-    return speedMap[this.level];
+    return speedMap[this.level] ?? 35;
   }
 
   // Functions
   listenToData = () => {
-    this.connection.on('data', (data: string) => {
+    this.connection?.on('data', (data) => {
       switch (data) {
         case 'tetris:play': {
           this.play();
@@ -93,7 +93,7 @@ export class Tetris extends Component<TetrisSignature> {
 
               if (successful) {
                 this.lines += successful.clearedLines;
-                this.score += scoreMap[successful.clearedLines];
+                this.score += scoreMap[successful.clearedLines] ?? 0;
                 if (this.tetrominoSequence.length === 0) {
                   this.tetrominoSequence = generateSequence();
                 }
@@ -117,8 +117,10 @@ export class Tetris extends Component<TetrisSignature> {
       }
     });
 
-    this.connection.on('error', () => {
-      this.peer.connections.delete(this.connection);
+    this.connection?.on('error', () => {
+      if (this.connection) {
+        this.peer.connections.delete(this.connection);
+      }
     });
   };
 
@@ -134,12 +136,15 @@ export class Tetris extends Component<TetrisSignature> {
     // draw the playfield
     for (let row = 0; row < 20; row++) {
       for (let col = 0; col < 10; col++) {
-        if (this.playfield[row][col]) {
-          const name = this.playfield[row][col];
-          this.context.fillStyle = colors[name];
+        if (this.playfield[row]?.[col]) {
+          const name = this.playfield[row]![col] ?? '';
+          const color = colors[name];
+          if (color) {
+            this.context.fillStyle = color;
 
-          // drawing 1 px smaller than the grid creates a grid effect
-          this.context.fillRect(col * grid, row * grid, grid - 2, grid - 2);
+            // drawing 1 px smaller than the grid creates a grid effect
+            this.context.fillRect(col * grid, row * grid, grid - 2, grid - 2);
+          }
         }
       }
     }
@@ -158,7 +163,7 @@ export class Tetris extends Component<TetrisSignature> {
 
           if (successful) {
             this.lines += successful.clearedLines;
-            this.score += scoreMap[successful.clearedLines];
+            this.score += scoreMap[successful.clearedLines] ?? 0;
             if (this.tetrominoSequence.length === 0) {
               this.tetrominoSequence = generateSequence();
             }
@@ -172,11 +177,11 @@ export class Tetris extends Component<TetrisSignature> {
         }
       }
 
-      this.context.fillStyle = colors[this.tetromino.name];
+      this.context.fillStyle = colors[this.tetromino.name]!;
 
       for (let row = 0; row < this.tetromino.matrix.length; row++) {
-        for (let col = 0; col < this.tetromino.matrix[row].length; col++) {
-          if (this.tetromino.matrix[row][col]) {
+        for (let col = 0; col < this.tetromino.matrix[row]!.length; col++) {
+          if (this.tetromino.matrix[row]![col]) {
             // drawing 1 px smaller than the grid creates a grid effect
             this.context.fillRect(
               (this.tetromino.col + col) * grid,
@@ -197,14 +202,14 @@ export class Tetris extends Component<TetrisSignature> {
     this.isGameOver = false;
     this.lines = 0;
     this.score = 0;
-    this.connection.send('tetris:playing');
+    this.connection?.send('tetris:playing');
     this.animationFrame = requestAnimationFrame(this.loop);
   };
 
   gameOver = () => {
     cancelAnimationFrame(this.animationFrame);
     this.isGameOver = true;
-    this.connection.send('tetris:game-over');
+    this.connection?.send('tetris:game-over');
   };
 
   setupBoard = modifier((element: HTMLCanvasElement) => {
