@@ -7,6 +7,7 @@ import { registerDestructor } from '@ember/destroyable';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 
 import { restartableTask } from 'ember-concurrency';
+// @ts-ignore
 import perform from 'ember-concurrency/helpers/perform';
 
 import ENV from 'flimmerkasten-client/config/environment';
@@ -132,7 +133,8 @@ export default class Application extends Component<ApplicationSignature> {
           {{#if this.isSetupCodeOpen}}
             <SetupCode @peerId={{this.peer.object.id}} />
           {{/if}}
-          {{yield}}
+          {{! template-lint-disable no-outlet-outside-routes }}
+          {{outlet}}
         </div>
       {{else}}
         <h1>Connecting...</h1>

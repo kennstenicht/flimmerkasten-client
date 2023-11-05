@@ -12,7 +12,7 @@ interface IframeSignature {
   Element: HTMLIFrameElement;
 }
 
-export default class Iframe extends Component<IframeSignature> {
+export class Iframe extends Component<IframeSignature> {
   // Services
   @service declare peer: PeerService;
 
@@ -58,3 +58,5 @@ export default class Iframe extends Component<IframeSignature> {
     ></iframe>
   </template>
 }
+
+export default Iframe;
