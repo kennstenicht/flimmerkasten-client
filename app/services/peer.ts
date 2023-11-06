@@ -1,4 +1,4 @@
-import Service from '@ember/service';
+import Service, { service } from '@ember/service';
 import { registerDestructor } from '@ember/destroyable';
 import { TrackedSet } from 'tracked-built-ins';
 import { currentMonitor, Monitor, appWindow } from '@tauri-apps/api/window';
@@ -14,7 +14,12 @@ import {
 } from '@tauri-apps/api/fs';
 import { v4 as uuidv4 } from 'uuid';
 
+import GameService from 'flimmerkasten-client/services/game';
+
 export class PeerService extends Service {
+  // Services
+  @service declare game: GameService;
+
   // Defaults
   @tracked errorMessage?: string;
   @tracked hostConnection?: DataConnection;
@@ -25,7 +30,7 @@ export class PeerService extends Service {
 
   // Create peer on initialization and register destructor
   constructor() {
-    super();
+    super(...arguments);
 
     currentMonitor()
       .then((monitor) => {
@@ -68,6 +73,10 @@ export class PeerService extends Service {
 
       connection.on('close', () => {
         this.connections.delete(connection);
+      });
+
+      connection.on('data', (data) => {
+        this.game.handlePlayIntend(connection, data);
       });
     });
 

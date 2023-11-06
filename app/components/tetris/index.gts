@@ -4,6 +4,7 @@ import { service } from '@ember/service';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import { modifier } from 'ember-modifier';
 
+import GameService from 'flimmerkasten-client/services/game';
 import PeerService from 'flimmerkasten-client/services/peer';
 import bem from 'flimmerkasten-client/helpers/bem';
 
@@ -26,6 +27,7 @@ export interface TetrisSignature {
 
 export class Tetris extends Component<TetrisSignature> {
   // Services
+  @service declare game: GameService;
   @service declare peer: PeerService;
 
   // Defaults
@@ -33,7 +35,6 @@ export class Tetris extends Component<TetrisSignature> {
   canvas?: HTMLCanvasElement | null;
   context?: CanvasRenderingContext2D | null;
   frameCount = 0;
-  @tracked isGameOver = false;
   @tracked lines = 0;
   playfield = createBlankPlayfield();
   @tracked score = 0;
@@ -43,9 +44,17 @@ export class Tetris extends Component<TetrisSignature> {
     this.tetrominoSequence,
   );
 
+  constructor() {
+    super(...arguments);
+
+    this.game.setupGame('tetris', () => {
+      this.play();
+    });
+  }
+
   // Getter and setter
   get connection() {
-    return [...this.peer.connections][0];
+    return this.game.playerConnection;
   }
 
   get level() {
@@ -60,11 +69,6 @@ export class Tetris extends Component<TetrisSignature> {
   listenToData = () => {
     this.connection?.on('data', (data) => {
       switch (data) {
-        case 'tetris:play': {
-          this.play();
-          break;
-        }
-
         case 'tetris:left':
         case 'tetris:right':
         case 'tetris:up':
@@ -199,17 +203,14 @@ export class Tetris extends Component<TetrisSignature> {
     this.playfield = createBlankPlayfield();
     this.tetrominoSequence = generateSequence();
     this.tetromino = getNextTetromino(this.playfield, this.tetrominoSequence);
-    this.isGameOver = false;
     this.lines = 0;
     this.score = 0;
-    this.connection?.send('tetris:playing');
     this.animationFrame = requestAnimationFrame(this.loop);
   };
 
   gameOver = () => {
     cancelAnimationFrame(this.animationFrame);
-    this.isGameOver = true;
-    this.connection?.send('tetris:game-over');
+    this.game.gameOver(this.score);
   };
 
   setupBoard = modifier((element: HTMLCanvasElement) => {
@@ -229,7 +230,7 @@ export class Tetris extends Component<TetrisSignature> {
             class={{bem styles 'board'}}
             {{this.setupBoard}}
           ></canvas>
-          {{#if this.isGameOver}}
+          {{#if this.game.isGameOver}}
             <div class={{bem styles 'game-over'}}>
               Game Over
             </div>
