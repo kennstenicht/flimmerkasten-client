@@ -4,6 +4,7 @@ import { service } from '@ember/service';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import { modifier } from 'ember-modifier';
 
+import GameService from 'flimmerkasten-client/services/game';
 import PeerService from 'flimmerkasten-client/services/peer';
 import bem from 'flimmerkasten-client/helpers/bem';
 
@@ -26,6 +27,7 @@ interface SnakeObject {
 
 export class Snake extends Component<SnakeSignature> {
   // Services
+  @service declare game: GameService;
   @service declare peer: PeerService;
 
   // Defaults
@@ -47,12 +49,19 @@ export class Snake extends Component<SnakeSignature> {
     x: 320,
     y: 320,
   };
-  @tracked isGameOver = false;
   @tracked score = 0;
+
+  constructor(owner: unknown, args: SnakeSignature['Args']) {
+    super(owner, args);
+
+    this.game.setupGame('snake', () => {
+      this.play();
+    });
+  }
 
   // Getter and setter
   get connection() {
-    return [...this.peer.connections][0];
+    return this.game.playerConnection;
   }
 
   get level() {
@@ -63,10 +72,6 @@ export class Snake extends Component<SnakeSignature> {
   listenToData = () => {
     this.connection?.on('data', (data) => {
       switch (data) {
-        case 'snake:play':
-          this.play();
-          break;
-
         case 'snake:left':
           if (this.snake.dx === 0) {
             this.snake.dx = -this.grid;
@@ -177,7 +182,6 @@ export class Snake extends Component<SnakeSignature> {
   };
 
   play = () => {
-    this.connection?.send('snake:playing');
     this.score = 0;
     this.snake.x = 160;
     this.snake.y = 160;
@@ -188,15 +192,12 @@ export class Snake extends Component<SnakeSignature> {
 
     this.apple.x = getRandomInt(0, 25) * this.grid;
     this.apple.y = getRandomInt(0, 25) * this.grid;
-    this.isGameOver = false;
-    this.connection?.send('snake:playing');
     this.animationFrame = requestAnimationFrame(this.loop);
   };
 
   gameOver = () => {
     cancelAnimationFrame(this.animationFrame);
-    this.isGameOver = true;
-    this.connection?.send('snake:game-over');
+    this.game.gameOver(this.score);
   };
 
   setupBoard = modifier((element: HTMLCanvasElement) => {
@@ -215,7 +216,7 @@ export class Snake extends Component<SnakeSignature> {
             class={{bem styles 'board'}}
             {{this.setupBoard}}
           ></canvas>
-          {{#if this.isGameOver}}
+          {{#if this.game.isGameOver}}
             <div class={{bem styles 'game-over'}}>
               Game Over
             </div>
