@@ -1,23 +1,19 @@
 import Service, { service } from '@ember/service';
 import { registerDestructor } from '@ember/destroyable';
 import { TrackedSet } from 'tracked-built-ins';
-import { currentMonitor, Monitor, appWindow } from '@tauri-apps/api/window';
+import { currentMonitor, Monitor } from '@tauri-apps/api/window';
 
 import Peer, { DataConnection } from 'peerjs';
 import { tracked } from '@glimmer/tracking';
 import { restartableTask, timeout } from 'ember-concurrency';
-import {
-  readTextFile,
-  writeTextFile,
-  createDir,
-  BaseDirectory,
-} from '@tauri-apps/api/fs';
 import { v4 as uuidv4 } from 'uuid';
 
+import AppDataService from 'flimmerkasten-client/services/app-data';
 import GameService from 'flimmerkasten-client/services/game';
 
 export class PeerService extends Service {
   // Services
+  @service declare appData: AppDataService;
   @service declare game: GameService;
 
   // Defaults
@@ -84,26 +80,15 @@ export class PeerService extends Service {
   });
 
   getAppConfig = async () => {
-    let appConfig;
+    const file = 'app-config.json';
+    const content = await this.appData.load(file);
 
-    try {
-      const appConfigString = await readTextFile(`${appWindow.label}.conf`, {
-        dir: BaseDirectory.AppConfig,
-      });
-      appConfig = JSON.parse(appConfigString);
-    } catch (error) {
-      await createDir('windows', {
-        dir: BaseDirectory.AppConfig,
-        recursive: true,
-      });
+    let appConfig;
+    if (content) {
+      appConfig = JSON.parse(content);
+    } else {
       appConfig = { peerId: uuidv4() };
-      await writeTextFile(
-        `${appWindow.label}.conf`,
-        JSON.stringify(appConfig),
-        {
-          dir: BaseDirectory.AppConfig,
-        },
-      );
+      this.appData.save(file, JSON.stringify(appConfig));
     }
 
     return appConfig;
