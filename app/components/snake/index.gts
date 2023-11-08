@@ -202,7 +202,7 @@ export class Snake extends Component<SnakeSignature> {
 
   gameOver = () => {
     cancelAnimationFrame(this.animationFrame);
-    this.game.gameOver(this.score);
+    this.game.gameOver(this.score, this.level);
   };
 
   setupBoard = modifier((element: HTMLCanvasElement) => {

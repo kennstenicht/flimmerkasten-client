@@ -1,9 +1,14 @@
-import Service from '@ember/service';
+import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { DataConnection } from 'peerjs';
 
 import { GameEvent } from 'flimmerkasten-client/models/game';
+import Leaderboard, { Score } from 'flimmerkasten-client/models/leaderboard';
+import AppDataService from 'flimmerkasten-client/services/app-data';
+
 export class GameService extends Service {
+  @service declare appData: AppDataService;
+
   private _debug: boolean = true;
   @tracked currentGame?: string;
   @tracked isGameOver = false;
@@ -43,26 +48,48 @@ export class GameService extends Service {
     this.play();
   }
 
-  gameOver(score: number) {
+  async gameOver(score: number, level: number) {
     if (!this.currentGame) {
       return;
     }
 
     this.isGameOver = true;
 
-    // TODO: Write highscore, somewhere
-    console.log(
-      'gameOver',
-      'score',
-      this.playerConnection?.metadata?.name,
+    const leaderboardScore = await this.saveScore({
+      name: this.playerConnection?.metadata.playerName,
       score,
-    );
+      level,
+      timestamp: Date.now(),
+    });
+
+    this.debug('gameOver', this.currentGame, leaderboardScore);
 
     this.playerConnection?.send({
       game: this.currentGame,
       name: 'host:game-over',
     });
     this.playerConnection = undefined;
+  }
+
+  private async saveScore(score: Score): Promise<Score | undefined> {
+    if (!this.currentGame) {
+      return;
+    }
+
+    const file = `leaderboards/${this.currentGame}.json`;
+    const leaderboard = new Leaderboard();
+
+    // Load and initialize leaderboard
+    const content = await this.appData.load(file);
+    if (content) {
+      leaderboard.fromJSON(content);
+    }
+
+    // Add score and save new leaderboard
+    const leaderboardScore = leaderboard.addScore(score);
+    this.appData.save(file, leaderboard.toJSON());
+
+    return leaderboardScore;
   }
 
   private debug(...args: any[]) {

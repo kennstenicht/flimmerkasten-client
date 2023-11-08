@@ -214,7 +214,7 @@ export class Tetris extends Component<TetrisSignature> {
 
   gameOver = () => {
     cancelAnimationFrame(this.animationFrame);
-    this.game.gameOver(this.score);
+    this.game.gameOver(this.score, this.level);
   };
 
   setupBoard = modifier((element: HTMLCanvasElement) => {
