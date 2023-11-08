@@ -4,6 +4,7 @@ import { service } from '@ember/service';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import { modifier } from 'ember-modifier';
 
+import { GameEvent } from 'flimmerkasten-client/models/game';
 import GameService from 'flimmerkasten-client/services/game';
 import PeerService from 'flimmerkasten-client/services/peer';
 import bem from 'flimmerkasten-client/helpers/bem';
@@ -71,31 +72,35 @@ export class Snake extends Component<SnakeSignature> {
   // Functions
   listenToData = () => {
     this.connection?.on('data', (data) => {
-      switch (data) {
-        case 'snake:left':
-          if (this.snake.dx === 0) {
-            this.snake.dx = -this.grid;
-            this.snake.dy = 0;
-          }
-          break;
-        case 'snake:right':
-          if (this.snake.dx === 0) {
-            this.snake.dx = this.grid;
-            this.snake.dy = 0;
-          }
-          break;
-        case 'snake:up':
-          if (this.snake.dy === 0) {
-            this.snake.dy = -this.grid;
-            this.snake.dx = 0;
-          }
-          break;
-        case 'snake:down':
-          if (this.snake.dy === 0) {
-            this.snake.dy = this.grid;
-            this.snake.dx = 0;
-          }
-          break;
+      const event = data as GameEvent;
+      const commands = [
+        'remote:left',
+        'remote:right',
+        'remote:up',
+        'remote:down',
+      ];
+      if (event.game !== 'snake' || !commands.includes(event.name)) {
+        return;
+      }
+
+      if (event.name === 'remote:left' && this.snake.dx === 0) {
+        this.snake.dx = -this.grid;
+        this.snake.dy = 0;
+      }
+
+      if (event.name === 'remote:right' && this.snake.dx === 0) {
+        this.snake.dx = this.grid;
+        this.snake.dy = 0;
+      }
+
+      if (event.name === 'remote:up' && this.snake.dy === 0) {
+        this.snake.dy = -this.grid;
+        this.snake.dx = 0;
+      }
+
+      if (event.name === 'remote:down' && this.snake.dy === 0) {
+        this.snake.dy = this.grid;
+        this.snake.dx = 0;
       }
     });
 
@@ -238,6 +243,7 @@ export class Snake extends Component<SnakeSignature> {
         </div>
       </div>
     {{else}}
+      <h2>Snake</h2>
       <h1>Waiting for player...</h1>
     {{/if}}
   </template>

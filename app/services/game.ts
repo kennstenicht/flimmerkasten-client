@@ -2,6 +2,7 @@ import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { DataConnection } from 'peerjs';
 
+import { GameEvent } from 'flimmerkasten-client/models/game';
 export class GameService extends Service {
   @tracked currentGame?: string;
   @tracked isGameOver = false;
@@ -9,14 +10,17 @@ export class GameService extends Service {
   @tracked playerConnection?: DataConnection;
 
   setupGame(name: string, play: () => void) {
-    this.debug('setup', name);
+    this.debug('setupGame', name);
 
     this.currentGame = name;
     this.play = play;
   }
 
   handlePlayIntend(connection: DataConnection, data: any) {
-    if (!this.currentGame || data !== this.event('play')) {
+    this.debug('handlePlayIntend', data);
+
+    const event = data as GameEvent;
+    if (event.name !== 'remote:play') {
       return;
     }
 
@@ -28,7 +32,10 @@ export class GameService extends Service {
 
     // Setup new player connection
     this.playerConnection = connection;
-    this.playerConnection.send(this.event('playing'));
+    this.playerConnection.send({
+      game: this.currentGame,
+      name: 'host:playing',
+    });
 
     // Start the game
     this.isGameOver = false;
@@ -36,6 +43,10 @@ export class GameService extends Service {
   }
 
   gameOver(score: number) {
+    if (!this.currentGame) {
+      return;
+    }
+
     this.isGameOver = true;
 
     // TODO: Write highscore, somewhere
@@ -46,12 +57,11 @@ export class GameService extends Service {
       score,
     );
 
-    this.playerConnection?.send(this.event('game-over'));
+    this.playerConnection?.send({
+      game: this.currentGame,
+      name: 'host:game-over',
+    });
     this.playerConnection = undefined;
-  }
-
-  event(event: string) {
-    return `${this.currentGame}:${event}`;
   }
 
   _debug: boolean = true;

@@ -4,6 +4,7 @@ import { service } from '@ember/service';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import { modifier } from 'ember-modifier';
 
+import { GameEvent } from 'flimmerkasten-client/models/game';
 import GameService from 'flimmerkasten-client/services/game';
 import PeerService from 'flimmerkasten-client/services/peer';
 import bem from 'flimmerkasten-client/helpers/bem';
@@ -68,56 +69,59 @@ export class Tetris extends Component<TetrisSignature> {
   // Functions
   listenToData = () => {
     this.connection?.on('data', (data) => {
-      switch (data) {
-        case 'tetris:left':
-        case 'tetris:right':
-        case 'tetris:up':
-        case 'tetris:down': {
-          const tetrominoCopy = { ...this.tetromino };
+      const event = data as GameEvent;
+      const commands = [
+        'remote:left',
+        'remote:right',
+        'remote:up',
+        'remote:down',
+      ];
+      if (event.game !== 'tetris' || !commands.includes(event.name)) {
+        return;
+      }
 
-          if (data === 'tetris:left') {
-            tetrominoCopy.col--;
-          }
+      const tetrominoCopy = { ...this.tetromino };
 
-          if (data === 'tetris:right') {
-            tetrominoCopy.col++;
-          }
+      if (event.name === 'remote:left') {
+        tetrominoCopy.col--;
+      }
 
-          if (data === 'tetris:up') {
-            tetrominoCopy.matrix = rotate(tetrominoCopy.matrix);
-          }
+      if (event.name === 'remote:right') {
+        tetrominoCopy.col++;
+      }
 
-          if (data === 'tetris:down') {
-            tetrominoCopy.row++;
+      if (event.name === 'remote:up') {
+        tetrominoCopy.matrix = rotate(tetrominoCopy.matrix);
+      }
 
-            if (!isValidMove(this.playfield, tetrominoCopy)) {
-              tetrominoCopy.row--;
+      if (event.name === 'remote:down') {
+        tetrominoCopy.row++;
 
-              const successful = placeTetromino(this.playfield, tetrominoCopy);
+        if (!isValidMove(this.playfield, tetrominoCopy)) {
+          tetrominoCopy.row--;
 
-              if (successful) {
-                this.lines += successful.clearedLines;
-                this.score += scoreMap[successful.clearedLines] ?? 0;
-                if (this.tetrominoSequence.length === 0) {
-                  this.tetrominoSequence = generateSequence();
-                }
-                this.tetromino = getNextTetromino(
-                  this.playfield,
-                  this.tetrominoSequence,
-                );
-              } else {
-                this.gameOver();
-              }
+          const successful = placeTetromino(this.playfield, tetrominoCopy);
 
-              return;
+          if (successful) {
+            this.lines += successful.clearedLines;
+            this.score += scoreMap[successful.clearedLines] ?? 0;
+            if (this.tetrominoSequence.length === 0) {
+              this.tetrominoSequence = generateSequence();
             }
+            this.tetromino = getNextTetromino(
+              this.playfield,
+              this.tetrominoSequence,
+            );
+          } else {
+            this.gameOver();
           }
 
-          if (isValidMove(this.playfield, tetrominoCopy)) {
-            this.tetromino = tetrominoCopy;
-          }
-          break;
+          return;
         }
+      }
+
+      if (isValidMove(this.playfield, tetrominoCopy)) {
+        this.tetromino = tetrominoCopy;
       }
     });
 
@@ -258,6 +262,7 @@ export class Tetris extends Component<TetrisSignature> {
         </div>
       </div>
     {{else}}
+      <h2>Tetris</h2>
       <h1>Waiting for player...</h1>
     {{/if}}
   </template>
