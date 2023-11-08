@@ -4,6 +4,7 @@ import { DataConnection } from 'peerjs';
 
 import { GameEvent } from 'flimmerkasten-client/models/game';
 export class GameService extends Service {
+  private _debug: boolean = true;
   @tracked currentGame?: string;
   @tracked isGameOver = false;
   @tracked play = () => {};
@@ -64,9 +65,7 @@ export class GameService extends Service {
     this.playerConnection = undefined;
   }
 
-  _debug: boolean = true;
-
-  debug(...args: any[]) {
+  private debug(...args: any[]) {
     if (this._debug) {
       console.log(...args);
     }
@@ -75,6 +74,7 @@ export class GameService extends Service {
 
 export default GameService;
 
+// DO NOT DELETE: this is how TypeScript knows how to look up your services.
 declare module '@ember/service' {
   interface Registry {
     game: GameService;
