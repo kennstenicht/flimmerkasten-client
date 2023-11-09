@@ -12,14 +12,26 @@ export class GameService extends Service {
   private _debug: boolean = true;
   @tracked activeGame?: string;
   @tracked isGameOver = false;
+  @tracked leaderboard: Leaderboard = new Leaderboard();
   @tracked play = () => {};
   @tracked playerConnection?: DataConnection;
+  @tracked playerScore?: Score;
+  @tracked showLeaderboard: boolean = false;
 
   activateGame(game: string, play: () => void) {
     this.debug('activateGame', game);
 
     this.activeGame = game;
     this.play = play;
+
+    this.resetGame(game);
+  }
+
+  resetGame(game: string) {
+    this.debug('reset', game);
+    this.reloadLeaderboard(game);
+    this.showLeaderboard = false;
+    this.playerScore = undefined;
   }
 
   handlePlayIntend(connection: DataConnection, data: any) {
@@ -55,12 +67,14 @@ export class GameService extends Service {
 
     this.isGameOver = true;
 
-    const leaderboardScore = await this.saveScore({
-      name: this.playerConnection?.metadata.playerName,
+    const playerName = this.playerConnection?.metadata.playerName;
+    const leaderboardScore = await this.saveScore(this.activeGame, {
+      name: playerName,
       score,
       level,
       timestamp: Date.now(),
     });
+    this.playerScore = leaderboardScore;
 
     this.debug('gameOver', this.activeGame, leaderboardScore);
 
@@ -71,23 +85,22 @@ export class GameService extends Service {
     this.playerConnection = undefined;
   }
 
-  private async saveScore(score: Score): Promise<Score | undefined> {
-    if (!this.activeGame) {
-      return;
-    }
-
-    const file = `leaderboards/${this.activeGame}.json`;
-    const leaderboard = new Leaderboard();
+  private async reloadLeaderboard(game: string) {
+    const file = `leaderboards/${game}.json`;
 
     // Load and initialize leaderboard
     const content = await this.appData.load(file);
     if (content) {
-      leaderboard.fromJSON(content);
+      this.leaderboard.fromJSON(content);
     }
+  }
+
+  private async saveScore(game: string, score: Score): Promise<Score> {
+    const file = `leaderboards/${game}.json`;
 
     // Add score and save new leaderboard
-    const leaderboardScore = leaderboard.addScore(score);
-    this.appData.save(file, leaderboard.toJSON());
+    const leaderboardScore = this.leaderboard.addScore(score);
+    this.appData.save(file, this.leaderboard.toJSON());
 
     return leaderboardScore;
   }
