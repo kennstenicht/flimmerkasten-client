@@ -29,6 +29,10 @@ export default class Leaderboard {
     }));
   }
 
+  top(limit: number) {
+    return this.getLeaderboard().slice(0, limit);
+  }
+
   private sortLeaderboard() {
     this.leaderboard.sort((a, b) => {
       if (a.score !== b.score) {

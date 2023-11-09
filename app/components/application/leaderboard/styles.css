@@ -1,0 +1,19 @@
+/* ==========================================================================
+   # APPLICATION / LEADERBOARD
+   ========================================================================== */
+
+.header th {
+  font-size: 14px;
+}
+
+.footer td {
+  padding-top: var(--spacing-large);
+}
+
+.cell--align-left {
+  text-align: left;
+}
+
+.cell--align-right {
+  text-align: right;
+}

@@ -1,9 +1,10 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { service } from '@ember/service';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import { service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 
+import Leaderboard from 'flimmerkasten-client/components/application/leaderboard';
 import { GameEvent } from 'flimmerkasten-client/models/game';
 import GameService from 'flimmerkasten-client/services/game';
 import PeerService from 'flimmerkasten-client/services/peer';
@@ -263,7 +264,15 @@ export class Tetris extends Component<TetrisSignature> {
       </div>
     {{else}}
       <h2>Tetris</h2>
-      <h1>Waiting for player...</h1>
+      {{#if this.game.showLeaderboard}}
+        <h1>Leaderboard</h1>
+        <Leaderboard
+          @items={{this.game.topTen}}
+          @playerScore={{this.game.playerScore}}
+        />
+      {{else}}
+        <h1>Waiting for player...</h1>
+      {{/if}}
     {{/if}}
   </template>
 }

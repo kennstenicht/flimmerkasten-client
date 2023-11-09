@@ -11,6 +11,7 @@ export class GameService extends Service {
 
   private _debug: boolean = true;
   @tracked activeGame?: string;
+  gameOverTimeout: number = 5000;
   @tracked isGameOver = false;
   @tracked leaderboard: Leaderboard = new Leaderboard();
   @tracked play = () => {};
@@ -76,13 +77,19 @@ export class GameService extends Service {
     });
     this.playerScore = leaderboardScore;
 
-    this.debug('gameOver', this.activeGame, leaderboardScore);
+    setTimeout(() => {
+      this.showLeaderboard = true;
+    }, this.gameOverTimeout);
 
     this.playerConnection?.send({
       game: this.activeGame,
       name: 'host:game-over',
     });
     this.playerConnection = undefined;
+  }
+
+  get topTen(): Array<Score> {
+    return this.leaderboard.top(10);
   }
 
   private async reloadLeaderboard(game: string) {
