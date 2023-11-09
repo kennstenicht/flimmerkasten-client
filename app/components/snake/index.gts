@@ -1,9 +1,10 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { service } from '@ember/service';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import { service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 
+import Leaderboard from 'flimmerkasten-client/components/application/leaderboard';
 import { GameEvent } from 'flimmerkasten-client/models/game';
 import GameService from 'flimmerkasten-client/services/game';
 import PeerService from 'flimmerkasten-client/services/peer';
@@ -55,7 +56,7 @@ export class Snake extends Component<SnakeSignature> {
   constructor(owner: unknown, args: SnakeSignature['Args']) {
     super(owner, args);
 
-    this.game.setupGame('snake', () => {
+    this.game.activateGame('snake', () => {
       this.play();
     });
   }
@@ -202,7 +203,7 @@ export class Snake extends Component<SnakeSignature> {
 
   gameOver = () => {
     cancelAnimationFrame(this.animationFrame);
-    this.game.gameOver(this.score);
+    this.game.gameOver(this.score, this.level);
   };
 
   setupBoard = modifier((element: HTMLCanvasElement) => {
@@ -244,7 +245,15 @@ export class Snake extends Component<SnakeSignature> {
       </div>
     {{else}}
       <h2>Snake</h2>
-      <h1>Waiting for player...</h1>
+      {{#if this.game.showLeaderboard}}
+        <h1>Leaderboard</h1>
+        <Leaderboard
+          @items={{this.game.highscores}}
+          @playerScore={{this.game.playerScore}}
+        />
+      {{else}}
+        <h1>Waiting for player...</h1>
+      {{/if}}
     {{/if}}
   </template>
 }

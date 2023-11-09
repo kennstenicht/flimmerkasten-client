@@ -10,7 +10,8 @@ import { dirname } from '@tauri-apps/api/path';
 import { appWindow } from '@tauri-apps/api/window';
 
 export class AppDataService extends Service {
-  private _debug: boolean = true;
+  // Config
+  private _debug: boolean = false;
   private dir: number = BaseDirectory.AppData;
 
   async load(file: string) {
@@ -48,7 +49,7 @@ export class AppDataService extends Service {
 
   private debug(...args: any[]) {
     if (this._debug) {
-      console.log(...args);
+      console.log('AppData', ...args);
     }
   }
 }

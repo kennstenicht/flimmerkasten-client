@@ -22,11 +22,14 @@ export class PeerService extends Service {
   @service declare appData: AppDataService;
   @service declare game: GameService;
 
+  // Config
+  private _debug: boolean = false;
+
   // Defaults
   @tracked errorMessage?: string;
   @tracked hostConnection?: DataConnection;
   @tracked monitor?: Monitor | null;
-  @tracked object: Peer = new Peer({ debug: 0 });
+  @tracked object: Peer = new Peer();
   @tracked isOpen: boolean = false;
   connections: TrackedSet<DataConnection> = new TrackedSet([]);
 
@@ -69,31 +72,37 @@ export class PeerService extends Service {
 
   createPeer = restartableTask(async (delay?: number) => {
     if (delay) await timeout(delay);
+    this.debug('createPeer');
 
     const appConfig = await this.getAppConfig();
 
-    const peer = new Peer(appConfig.peerId, {
-      debug: 0,
-    });
+    const peer = new Peer(appConfig.peerId, { debug: 0 });
 
     peer.on('open', () => {
+      this.debug('open', peer.id);
       this.isOpen = true;
     });
 
     peer.on('disconnected', () => {
+      this.debug('disconnected', peer.id);
       this.isOpen = false;
     });
 
     peer.on('error', (error) => {
+      this.debug('error', peer.id, error);
       this.errorMessage = error.message;
     });
 
     peer.on('connection', (connection) => {
+      this.debug('connection', peer.id);
+
       connection.on('open', () => {
+        this.debug('connection', 'open', connection.peer);
         this.connections.add(connection);
       });
 
       connection.on('close', () => {
+        this.debug('connection', 'close', connection.peer);
         this.connections.delete(connection);
       });
 
@@ -119,6 +128,12 @@ export class PeerService extends Service {
 
     return appConfig;
   };
+
+  debug(...args: any[]) {
+    if (this._debug) {
+      console.log('Peer', ...args);
+    }
+  }
 }
 
 export default PeerService;

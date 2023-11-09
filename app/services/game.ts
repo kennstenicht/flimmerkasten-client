@@ -1,19 +1,43 @@
-import Service from '@ember/service';
+import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { DataConnection } from 'peerjs';
 
 import { GameEvent } from 'flimmerkasten-client/models/game';
+import Leaderboard, { Score } from 'flimmerkasten-client/models/leaderboard';
+import AppDataService from 'flimmerkasten-client/services/app-data';
+
 export class GameService extends Service {
-  @tracked currentGame?: string;
+  @service declare appData: AppDataService;
+
+  // Config
+  private _debug: boolean = false;
+  private gameOverTimeout: number = 5000;
+
+  // Defaults
+  @tracked activeGame?: string;
+  @tracked highscores: Score[] = [];
   @tracked isGameOver = false;
+  @tracked leaderboard: Leaderboard = new Leaderboard();
   @tracked play = () => {};
   @tracked playerConnection?: DataConnection;
+  @tracked playerScore?: Score;
+  @tracked showLeaderboard: boolean = false;
 
-  setupGame(name: string, play: () => void) {
-    this.debug('setupGame', name);
+  activateGame(game: string, play: () => void) {
+    this.debug('activateGame', game);
 
-    this.currentGame = name;
+    this.activeGame = game;
     this.play = play;
+
+    this.resetGame(game);
+  }
+
+  resetGame(game: string) {
+    this.debug('resetGame', game);
+
+    this.reloadLeaderboard(game);
+    this.showLeaderboard = false;
+    this.playerScore = undefined;
   }
 
   handlePlayIntend(connection: DataConnection, data: any) {
@@ -33,7 +57,7 @@ export class GameService extends Service {
     // Setup new player connection
     this.playerConnection = connection;
     this.playerConnection.send({
-      game: this.currentGame,
+      game: this.activeGame,
       name: 'host:playing',
     });
 
@@ -42,39 +66,69 @@ export class GameService extends Service {
     this.play();
   }
 
-  gameOver(score: number) {
-    if (!this.currentGame) {
+  async gameOver(score: number, level: number) {
+    if (!this.activeGame) {
       return;
     }
 
     this.isGameOver = true;
 
-    // TODO: Write highscore, somewhere
-    console.log(
-      'gameOver',
-      'score',
-      this.playerConnection?.metadata?.name,
+    this.debug('gameOver', this.activeGame);
+
+    const playerName = this.playerConnection?.metadata.playerName;
+    const leaderboardScore = await this.saveScore(this.activeGame, {
+      name: playerName,
       score,
-    );
+      level,
+      timestamp: Date.now(),
+    });
+    this.playerScore = leaderboardScore;
+    this.highscores = this.leaderboard.top(10);
+
+    this.debug('gameOver', leaderboardScore);
+
+    setTimeout(() => {
+      this.showLeaderboard = true;
+    }, this.gameOverTimeout);
 
     this.playerConnection?.send({
-      game: this.currentGame,
+      game: this.activeGame,
       name: 'host:game-over',
     });
     this.playerConnection = undefined;
   }
 
-  _debug: boolean = true;
+  private async reloadLeaderboard(game: string) {
+    const file = `leaderboards/${game}.json`;
 
-  debug(...args: any[]) {
+    // Load and initialize leaderboard
+    const content = await this.appData.load(file);
+    if (content) {
+      this.leaderboard.fromJSON(content);
+      this.highscores = this.leaderboard.top(10);
+    }
+  }
+
+  private async saveScore(game: string, score: Score): Promise<Score> {
+    const file = `leaderboards/${game}.json`;
+
+    // Add score and save new leaderboard
+    const leaderboardScore = this.leaderboard.addScore(score);
+    this.appData.save(file, this.leaderboard.toJSON());
+
+    return leaderboardScore;
+  }
+
+  private debug(...args: any[]) {
     if (this._debug) {
-      console.log(...args);
+      console.log('Game', ...args);
     }
   }
 }
 
 export default GameService;
 
+// DO NOT DELETE: this is how TypeScript knows how to look up your services.
 declare module '@ember/service' {
   interface Registry {
     game: GameService;
