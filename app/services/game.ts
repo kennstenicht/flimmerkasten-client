@@ -15,6 +15,7 @@ export class GameService extends Service {
 
   // Defaults
   @tracked activeGame?: string;
+  @tracked highscores: Score[] = [];
   @tracked isGameOver = false;
   @tracked leaderboard: Leaderboard = new Leaderboard();
   @tracked play = () => {};
@@ -72,6 +73,8 @@ export class GameService extends Service {
 
     this.isGameOver = true;
 
+    this.debug('gameOver', this.activeGame);
+
     const playerName = this.playerConnection?.metadata.playerName;
     const leaderboardScore = await this.saveScore(this.activeGame, {
       name: playerName,
@@ -80,8 +83,9 @@ export class GameService extends Service {
       timestamp: Date.now(),
     });
     this.playerScore = leaderboardScore;
+    this.highscores = this.leaderboard.top(10);
 
-    this.debug('gameOver', this.activeGame, leaderboardScore);
+    this.debug('gameOver', leaderboardScore);
 
     setTimeout(() => {
       this.showLeaderboard = true;
@@ -94,10 +98,6 @@ export class GameService extends Service {
     this.playerConnection = undefined;
   }
 
-  get topTen(): Array<Score> {
-    return this.leaderboard.top(10);
-  }
-
   private async reloadLeaderboard(game: string) {
     const file = `leaderboards/${game}.json`;
 
@@ -105,6 +105,7 @@ export class GameService extends Service {
     const content = await this.appData.load(file);
     if (content) {
       this.leaderboard.fromJSON(content);
+      this.highscores = this.leaderboard.top(10);
     }
   }
 

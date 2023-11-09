@@ -248,7 +248,7 @@ export class Snake extends Component<SnakeSignature> {
       {{#if this.game.showLeaderboard}}
         <h1>Leaderboard</h1>
         <Leaderboard
-          @items={{this.game.topTen}}
+          @items={{this.game.highscores}}
           @playerScore={{this.game.playerScore}}
         />
       {{else}}
