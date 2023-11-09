@@ -60,7 +60,7 @@ jobs:
         with:
           base_image: https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bullseye.7z
           cpu: cortex-a53
-          bind_mount_repository: true
+          # bind_mount_repository: true
           image_additional_mb: 10240
           optimize_image: false
           commands: |
@@ -85,7 +85,6 @@ jobs:
             # Install dependencies
             apt-get install --no-install-recommends -y nodejs build-essential libwebkit2gtk-4.0-dev libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
             npm install -g pnpm
-            pnpm install
       - name: Move and rename image with dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -96,6 +95,7 @@ jobs:
           base_image: file://$RUNNER_TEMP/dependencies_cache.img
           commands: |
             cargo install tauri-cli
+            pnpm install
             cargo tauri build
       - name: Upload deb bundle
         uses: actions/upload-artifact@v3
