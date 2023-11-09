@@ -47,6 +47,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: wyvox/action-setup-pnpm@v3
+        with:
+          node-version: 18.18.1
       - uses: pguyot/arm-runner-action@v2.5.2
         with:
           base_image: https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bullseye.7z
