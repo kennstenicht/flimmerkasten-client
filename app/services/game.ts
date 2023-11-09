@@ -10,15 +10,15 @@ export class GameService extends Service {
   @service declare appData: AppDataService;
 
   private _debug: boolean = true;
-  @tracked currentGame?: string;
+  @tracked activeGame?: string;
   @tracked isGameOver = false;
   @tracked play = () => {};
   @tracked playerConnection?: DataConnection;
 
-  setupGame(name: string, play: () => void) {
-    this.debug('setupGame', name);
+  activateGame(game: string, play: () => void) {
+    this.debug('activateGame', game);
 
-    this.currentGame = name;
+    this.activeGame = game;
     this.play = play;
   }
 
@@ -39,7 +39,7 @@ export class GameService extends Service {
     // Setup new player connection
     this.playerConnection = connection;
     this.playerConnection.send({
-      game: this.currentGame,
+      game: this.activeGame,
       name: 'host:playing',
     });
 
@@ -49,7 +49,7 @@ export class GameService extends Service {
   }
 
   async gameOver(score: number, level: number) {
-    if (!this.currentGame) {
+    if (!this.activeGame) {
       return;
     }
 
@@ -62,21 +62,21 @@ export class GameService extends Service {
       timestamp: Date.now(),
     });
 
-    this.debug('gameOver', this.currentGame, leaderboardScore);
+    this.debug('gameOver', this.activeGame, leaderboardScore);
 
     this.playerConnection?.send({
-      game: this.currentGame,
+      game: this.activeGame,
       name: 'host:game-over',
     });
     this.playerConnection = undefined;
   }
 
   private async saveScore(score: Score): Promise<Score | undefined> {
-    if (!this.currentGame) {
+    if (!this.activeGame) {
       return;
     }
 
-    const file = `leaderboards/${this.currentGame}.json`;
+    const file = `leaderboards/${this.activeGame}.json`;
     const leaderboard = new Leaderboard();
 
     // Load and initialize leaderboard

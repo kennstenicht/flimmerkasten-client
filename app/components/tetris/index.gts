@@ -48,7 +48,7 @@ export class Tetris extends Component<TetrisSignature> {
   constructor(owner: unknown, args: TetrisSignature['Args']) {
     super(owner, args);
 
-    this.game.setupGame('tetris', () => {
+    this.game.activateGame('tetris', () => {
       this.play();
     });
   }

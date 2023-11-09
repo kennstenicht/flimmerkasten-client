@@ -55,7 +55,7 @@ export class Snake extends Component<SnakeSignature> {
   constructor(owner: unknown, args: SnakeSignature['Args']) {
     super(owner, args);
 
-    this.game.setupGame('snake', () => {
+    this.game.activateGame('snake', () => {
       this.play();
     });
   }
