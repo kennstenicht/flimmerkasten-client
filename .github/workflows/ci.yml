@@ -71,13 +71,13 @@ jobs:
             curl https://sh.rustup.rs -sSf | sh -s -- -y
             . "$HOME/.cargo/env"
             curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash
-            # Install build tools and tauri-cli requirements
-            cargo install tauri-cli
             # Install framework specific packages
             apt-get install -y nodejs
             npm install pnpm
-            # Install frontend dependencies
             pnpm install
+            # Install build tools and tauri-cli requirements
+            apt-get install -y libwebkit2gtk-4.0-dev build-essential wget libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+            cargo install tauri-cli
             # Build the application
             cargo tauri build
       - name: Upload deb bundle
