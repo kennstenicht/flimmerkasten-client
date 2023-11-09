@@ -1,7 +1,13 @@
 import Service, { service } from '@ember/service';
 import { registerDestructor } from '@ember/destroyable';
 import { TrackedSet } from 'tracked-built-ins';
-import { currentMonitor, Monitor } from '@tauri-apps/api/window';
+import {
+  appWindow,
+  availableMonitors,
+  currentMonitor,
+  Monitor,
+  WebviewWindow,
+} from '@tauri-apps/api/window';
 
 import Peer, { DataConnection } from 'peerjs';
 import { tracked } from '@glimmer/tracking';
@@ -10,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import AppDataService from 'flimmerkasten-client/services/app-data';
 import GameService from 'flimmerkasten-client/services/game';
-
+import ENV from 'flimmerkasten-client/config/environment';
 export class PeerService extends Service {
   // Services
   @service declare appData: AppDataService;
@@ -28,11 +34,31 @@ export class PeerService extends Service {
   constructor() {
     super(...arguments);
 
-    currentMonitor()
-      .then((monitor) => {
-        this.monitor = monitor;
-      })
-      .catch((error) => console.log(error));
+    if (ENV.environment === 'production') {
+      availableMonitors().then((monitors) => {
+        if (monitors.length > 1) {
+          new WebviewWindow('flimmerkasten-2', {
+            title: 'Flimmerkasten 2',
+            width: 720,
+            height: 576,
+          });
+        }
+
+        if (appWindow.label === 'flimmerkasten-1') {
+          appWindow.setPosition(monitors[0]!.position);
+          appWindow.setFullscreen(true);
+        }
+
+        if (appWindow.label === 'flimmerkasten-2') {
+          appWindow.setPosition(monitors[1]!.position);
+          appWindow.setFullscreen(true);
+        }
+      });
+    }
+
+    currentMonitor().then((monitor) => {
+      this.monitor = monitor;
+    });
 
     this.createPeer.perform();
 
