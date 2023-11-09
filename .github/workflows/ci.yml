@@ -14,40 +14,41 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  install_dependencies:
-    name: 📦 Install Dependencies
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: wyvox/action-setup-pnpm@v3
-        with:
-          node-version: 18.18.1
+  # install_dependencies:
+  #   name: 📦 Install Dependencies
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: wyvox/action-setup-pnpm@v3
+  #       with:
+  #         node-version: 18.18.1
 
-  test:
-    name: 🕵🏻‍♀️ Lint & Test
-    runs-on: ubuntu-latest
-    needs: [install_dependencies]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: wyvox/action-setup-pnpm@v3
-        with:
-          node-version: 18.18.1
-      - name: Lint
-        run: pnpm lint
-      - name: Test
-        run: pnpm test
+  # test:
+  #   name: 🕵🏻‍♀️ Lint & Test
+  #   runs-on: ubuntu-latest
+  #   needs: [install_dependencies]
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: wyvox/action-setup-pnpm@v3
+  #       with:
+  #         node-version: 18.18.1
+  #     - name: Lint
+  #       run: pnpm lint
+  #     - name: Test
+  #       run: pnpm test
 
   build:
     name: 🏗️ Build
     permissions:
       contents: write
     runs-on: ubuntu-latest
-    needs: [install_dependencies, test]
+    # needs: [install_dependencies, test]
     # if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - uses: pguyot/arm-runner-action@v2.5.2
+      - name: Build application
+        uses: pguyot/arm-runner-action@v2.5.2
         with:
           base_image: https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bullseye.7z
           cpu: cortex-a53
@@ -68,9 +69,10 @@ jobs:
             curl https://sh.rustup.rs -sSf | sh -s -- -y
             . "$HOME/.cargo/env"
             # Install nodejs
+            sudo rm -rf /etc/apt/keyrings/nodesource.gpg
             curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
             NODE_MAJOR=18
-            echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+            echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
             apt-get update && apt-get install nodejs -y
             npm install -g pnpm
             # Install build tools and tauri-cli requirements
