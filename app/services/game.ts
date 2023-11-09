@@ -9,9 +9,12 @@ import AppDataService from 'flimmerkasten-client/services/app-data';
 export class GameService extends Service {
   @service declare appData: AppDataService;
 
-  private _debug: boolean = true;
+  // Config
+  private _debug: boolean = false;
+  private gameOverTimeout: number = 5000;
+
+  // Defaults
   @tracked activeGame?: string;
-  gameOverTimeout: number = 5000;
   @tracked isGameOver = false;
   @tracked leaderboard: Leaderboard = new Leaderboard();
   @tracked play = () => {};
@@ -29,7 +32,8 @@ export class GameService extends Service {
   }
 
   resetGame(game: string) {
-    this.debug('reset', game);
+    this.debug('resetGame', game);
+
     this.reloadLeaderboard(game);
     this.showLeaderboard = false;
     this.playerScore = undefined;
@@ -77,6 +81,8 @@ export class GameService extends Service {
     });
     this.playerScore = leaderboardScore;
 
+    this.debug('gameOver', this.activeGame, leaderboardScore);
+
     setTimeout(() => {
       this.showLeaderboard = true;
     }, this.gameOverTimeout);
@@ -114,7 +120,7 @@ export class GameService extends Service {
 
   private debug(...args: any[]) {
     if (this._debug) {
-      console.log(...args);
+      console.log('Game', ...args);
     }
   }
 }
