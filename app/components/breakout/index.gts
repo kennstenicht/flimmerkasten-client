@@ -10,7 +10,7 @@ import GameService from 'flimmerkasten-client/services/game';
 import PeerService from 'flimmerkasten-client/services/peer';
 import bem from 'flimmerkasten-client/helpers/bem';
 
-import { onLeft, onRight, onStart, onStop, loop, setupGame } from './game';
+import Game from './game';
 import styles from './styles.css';
 
 interface BreakoutSignature {
@@ -31,7 +31,6 @@ export class Breakout extends Component<BreakoutSignature> {
   @service declare peer: PeerService;
 
   // Defaults
-  animationFrame: number = 0;
   canvas?: HTMLCanvasElement | null;
   context?: CanvasRenderingContext2D | null;
   @tracked score = 0;
@@ -56,8 +55,6 @@ export class Breakout extends Component<BreakoutSignature> {
   // Functions
   listenToData = () => {
     this.connection?.on('data', (data) => {
-      console.log(data);
-
       const event = data as GameEvent;
       const commands = [
         'remote:left',
@@ -70,19 +67,19 @@ export class Breakout extends Component<BreakoutSignature> {
       }
 
       if (event.name === 'remote:left') {
-        onLeft();
+        Game.controls.onLeft();
       }
 
       if (event.name === 'remote:right') {
-        onRight();
+        Game.controls.onRight();
       }
 
       if (event.name === 'remote:down') {
-        onStart();
+        Game.controls.onStart();
       }
 
       if (event.name === 'remote:stop') {
-        onStop();
+        Game.controls.onStop();
       }
     });
 
@@ -95,11 +92,11 @@ export class Breakout extends Component<BreakoutSignature> {
 
   play = () => {
     this.score = 0;
-    this.animationFrame = requestAnimationFrame(loop);
+    Game.loop();
   };
 
   gameOver = () => {
-    cancelAnimationFrame(this.animationFrame);
+    Game.stop();
     this.game.gameOver(this.score, this.level);
   };
 
@@ -110,7 +107,7 @@ export class Breakout extends Component<BreakoutSignature> {
   setupBoard = modifier((element: HTMLCanvasElement) => {
     this.canvas = element;
     this.context = this.canvas.getContext('2d');
-    setupGame(this.canvas, this.context, this.onScore);
+    Game.setup(this.canvas, this.context, this.onScore);
   });
 
   // Template

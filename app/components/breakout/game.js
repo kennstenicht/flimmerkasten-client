@@ -1,12 +1,13 @@
+let animationFrame;
+const callbacks = {};
 let canvas;
 let context;
 let paddle;
-let onScore;
 
-export function setupGame(can, ctx, scoreFunction) {
+function setup(can, ctx, onScore) {
   canvas = can;
   context = ctx;
-  onScore = scoreFunction;
+  callbacks.onScore = onScore;
 
   paddle = {
     // place the paddle horizontally in the middle of the screen
@@ -101,7 +102,12 @@ function collides(obj1, obj2) {
 
 // game loop
 export function loop() {
-  requestAnimationFrame(loop);
+  animationFrame = requestAnimationFrame(loop);
+
+  if (!canvas || !context) {
+    return;
+  }
+
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   // move paddle by it's velocity
@@ -158,7 +164,7 @@ export function loop() {
     if (collides(ball, brick)) {
       // remove brick from the bricks array
       bricks.splice(i, 1);
-      onScore(brick);
+      callbacks.onScore(brick);
 
       // ball is above or below the brick, change y velocity
       // account for the balls speed since it will be inside the brick when it
@@ -201,23 +207,34 @@ export function loop() {
   context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
 
-export function onLeft() {
-  paddle.dx = -3;
+const controls = {
+  onLeft() {
+    paddle.dx = -3;
+  },
+  onRight() {
+    paddle.dx = 3;
+  },
+  onStart() {
+    // if they ball is not moving, we can launch the ball using the space key. ball
+    // will move towards the bottom right to start
+    if (ball.dx === 0 && ball.dy === 0) {
+      ball.dx = ball.speed;
+      ball.dy = ball.speed;
+    }
+  },
+  onStop() {
+    paddle.dx = 0;
+  },
+};
+
+function stop() {
+  cancelAnimationFrame(animationFrame);
 }
 
-export function onRight() {
-  paddle.dx = 3;
-}
-
-export function onStart() {
-  // if they ball is not moving, we can launch the ball using the space key. ball
-  // will move towards the bottom right to start
-  if (ball.dx === 0 && ball.dy === 0) {
-    ball.dx = ball.speed;
-    ball.dy = ball.speed;
-  }
-}
-
-export function onStop() {
-  paddle.dx = 0;
-}
+export default {
+  animationFrame,
+  controls,
+  loop,
+  setup,
+  stop,
+};
