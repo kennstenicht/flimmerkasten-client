@@ -65,6 +65,7 @@ export class GameService extends Service {
 
     this.idleTimer = setTimeout(() => {
       this.debug('idleTimeout', 'transitionTo peer.iframe');
+      this.activeGame = undefined;
       this.router.transitionTo('peer.iframe');
     }, this.idleTimeout);
   }
