@@ -1,4 +1,5 @@
 let animationFrame;
+let bricks;
 const callbacks = {};
 let canvas;
 let context;
@@ -9,6 +10,8 @@ function setup(can, ctx, onLost, onScore) {
   context = ctx;
   callbacks.onLost = onLost;
   callbacks.onScore = onScore;
+
+  buildBricks();
 
   paddle = {
     // place the paddle horizontally in the middle of the screen
@@ -58,21 +61,24 @@ const brickHeight = 12;
 // and 13 2px gaps between them, thats: 400 - (14 * 25 + 2 * 13) = 24px. so each
 // wall will be 12px
 const wallSize = 12;
-const bricks = [];
 
-// create the level by looping over each row and column in the level1 array
-// and creating an object with the bricks position (x, y) and color
-for (let row = 0; row < level1.length; row++) {
-  for (let col = 0; col < level1[row].length; col++) {
-    const colorCode = level1[row][col];
+function buildBricks() {
+  bricks = [];
 
-    bricks.push({
-      x: wallSize + (brickWidth + brickGap) * col,
-      y: wallSize + (brickHeight + brickGap) * row,
-      color: colorMap[colorCode],
-      width: brickWidth,
-      height: brickHeight,
-    });
+  // create the level by looping over each row and column in the level1 array
+  // and creating an object with the bricks position (x, y) and color
+  for (let row = 0; row < level1.length; row++) {
+    for (let col = 0; col < level1[row].length; col++) {
+      const colorCode = level1[row][col];
+
+      bricks.push({
+        x: wallSize + (brickWidth + brickGap) * col,
+        y: wallSize + (brickHeight + brickGap) * row,
+        color: colorMap[colorCode],
+        width: brickWidth,
+        height: brickHeight,
+      });
+    }
   }
 }
 
