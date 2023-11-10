@@ -33,9 +33,10 @@ export class Iframe extends Component<IframeSignature> {
       list: 'PLJpymKu-E9PeQKTvgaXL7H5YFeEyRa0_v',
       listType: 'playlist',
     });
+    this.player.playVideo();
 
     //
-    this.player.on('onStateChange', (event) => {
+    this.player.on('stateChange', (event) => {
       console.log(event);
       // PlayerStates
       // YT.PlayerState.ENDED
