@@ -78,23 +78,23 @@ export class GameService extends Service {
   }
 
   handleSetupGame(connection: DataConnection, data: any) {
-    this.debug('handleSetupGame', data);
+    // this.debug('handleSetupGame', data);
 
     const event = data as GameEvent;
     if (event.name !== 'remote:setup-game') {
       return;
     }
 
-    this.debug(this.activeGame);
+    this.debug('handleSetupGame', this.activeGame);
     if (!this.activeGame || this.activeGame !== event.game) {
-      this.debug('transitionTo', event.game);
+      this.debug('handleSetupGame', 'transition to', event.game);
 
       this.router.transitionTo(`peer.${event.game}`);
     }
   }
 
   handlePlayIntend(connection: DataConnection, data: any) {
-    this.debug('handlePlayIntend', data);
+    // this.debug('handlePlayIntend', data);
 
     if (!this.activeGame) {
       return;
@@ -121,7 +121,7 @@ export class GameService extends Service {
   }
 
   async gameOver(score: number, level: number) {
-    if (!this.activeGame || !this.playerConnection) {
+    if (!this.activeGame || !this.playerConnection || this.isGameOver) {
       return;
     }
     this.debug('gameOver', this.activeGame);
