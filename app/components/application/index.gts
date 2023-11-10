@@ -107,7 +107,7 @@ export default class Application extends Component<ApplicationSignature> {
   <template>
     <div class={{bem styles}} ...attributes>
       {{#if this.peer.isOpen}}
-        <div {{didInsert (perform this.createHostConnection)}}>
+        <div {{!! didInsert (perform this.createHostConnection) !!}}>
           {{#if this.isDevelopment}}
             <div class={{bem styles 'toolbar'}}>
               <div class={{bem styles 'content'}}>
