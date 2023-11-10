@@ -12,7 +12,7 @@ import { TrackedSet } from 'tracked-built-ins';
 import Peer, { DataConnection } from 'peerjs';
 import { tracked } from '@glimmer/tracking';
 import { restartableTask, timeout } from 'ember-concurrency';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 
 import AppDataService from 'flimmerkasten-client/services/app-data';
 import GameService from 'flimmerkasten-client/services/game';
@@ -23,7 +23,7 @@ export class PeerService extends Service {
   @service declare game: GameService;
 
   // Config
-  private _debug: boolean = false;
+  private _debug: boolean = true;
 
   // Defaults
   @tracked errorMessage?: string;
