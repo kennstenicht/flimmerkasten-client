@@ -1,3 +1,4 @@
+import RouterService from '@ember/routing/router-service';
 import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { DataConnection } from 'peerjs';
@@ -8,15 +9,20 @@ import AppDataService from 'flimmerkasten-client/services/app-data';
 
 export class GameService extends Service {
   @service declare appData: AppDataService;
+  @service declare router: RouterService;
 
   // Config
   private _debug: boolean = false;
-  private gameOverTimeout: number = 5000;
+  private gameOverTimeout: number = 3000;
+  private idleTimeout = 60000;
+  private idleTimer?: ReturnType<typeof setTimeout>;
+  private waitingForPlayerTimeout: number = 6000;
 
   // Defaults
   @tracked activeGame?: string;
   @tracked highscores: Score[] = [];
   @tracked isGameOver = false;
+  @tracked isWaitingForPlayer = true;
   @tracked leaderboard: Leaderboard = new Leaderboard();
   @tracked play = () => {};
   @tracked playerConnection?: DataConnection;
@@ -29,73 +35,122 @@ export class GameService extends Service {
     this.activeGame = game;
     this.play = play;
 
-    this.resetGame(game);
+    this.reloadLeaderboard(game);
+    this.waitForPlayer();
   }
 
-  resetGame(game: string) {
-    this.debug('resetGame', game);
+  startGame(playerConnection: DataConnection) {
+    this.debug('startGame', this.activeGame);
 
-    this.reloadLeaderboard(game);
+    this.resetGame();
+
+    // Setup new player connection
+    this.isWaitingForPlayer = false;
+    this.playerConnection = playerConnection;
+    this.playerConnection.send({ game: this.activeGame, name: 'host:playing' });
+
+    this.play();
+  }
+
+  waitForPlayer() {
+    this.debug('waitForPlayer', this.activeGame);
+
+    this.resetGame();
+
+    this.isWaitingForPlayer = true;
+
+    // TODO: Setup timer for transition to /
+    if (this.idleTimer) {
+      clearTimeout(this.idleTimer);
+    }
+
+    this.idleTimer = setTimeout(() => {
+      this.debug('idleTimeout', 'transitionTo /');
+      this.router.transitionTo('/');
+    }, this.idleTimeout);
+  }
+
+  resetGame() {
+    this.isGameOver = false;
     this.showLeaderboard = false;
+    this.playerConnection = undefined;
     this.playerScore = undefined;
+  }
+
+  handleSetupGame(connection: DataConnection, data: any) {
+    this.debug('handleSetupGame', data);
+
+    const event = data as GameEvent;
+    if (event.name !== 'remote:setup-game') {
+      return;
+    }
+
+    this.debug(this.activeGame);
+    if (!this.activeGame || this.activeGame !== event.game) {
+      this.debug('transitionTo', event.game);
+
+      this.router.transitionTo(event.game);
+    }
   }
 
   handlePlayIntend(connection: DataConnection, data: any) {
     this.debug('handlePlayIntend', data);
+
+    if (!this.activeGame) {
+      return;
+    }
 
     const event = data as GameEvent;
     if (event.name !== 'remote:play') {
       return;
     }
 
-    if (this.playerConnection) {
-      // TODO: Handle unable to join situation (someone is playing)
-      // connection.send(this.event('unable-to-join'));
+    if (!this.isWaitingForPlayer) {
+      this.debug('unable-to-join');
+
+      const { playerName } = this.playerConnection!.metadata;
+      connection.send({
+        game: this.activeGame,
+        name: 'host:unable-to-join',
+        message: playerName,
+      });
       return;
     }
 
-    // Setup new player connection
-    this.playerConnection = connection;
-    this.playerConnection.send({
-      game: this.activeGame,
-      name: 'host:playing',
-    });
-
-    // Start the game
-    this.isGameOver = false;
-    this.play();
+    this.startGame(connection);
   }
 
   async gameOver(score: number, level: number) {
-    if (!this.activeGame) {
+    if (!this.activeGame || !this.playerConnection) {
       return;
     }
+    this.debug('gameOver', this.activeGame);
 
     this.isGameOver = true;
 
-    this.debug('gameOver', this.activeGame);
-
-    const playerName = this.playerConnection?.metadata.playerName;
-    const leaderboardScore = await this.saveScore(this.activeGame, {
+    const { playerName } = this.playerConnection.metadata;
+    this.playerScore = await this.saveScore(this.activeGame, {
       name: playerName,
       score,
       level,
       timestamp: Date.now(),
     });
-    this.playerScore = leaderboardScore;
     this.highscores = this.leaderboard.top(10);
 
-    this.debug('gameOver', leaderboardScore);
+    this.debug('gameOver', this.playerScore);
 
-    setTimeout(() => {
-      this.showLeaderboard = true;
-    }, this.gameOverTimeout);
-
-    this.playerConnection?.send({
+    // TODO: Send score
+    this.playerConnection.send({
       game: this.activeGame,
       name: 'host:game-over',
     });
-    this.playerConnection = undefined;
+
+    setTimeout(() => {
+      this.showLeaderboard = true;
+      setTimeout(() => {
+        this.waitForPlayer();
+      }, this.waitingForPlayerTimeout);
+    }, this.gameOverTimeout);
   }
 
   private async reloadLeaderboard(game: string) {

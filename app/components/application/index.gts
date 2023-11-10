@@ -12,6 +12,7 @@ import perform from 'ember-concurrency/helpers/perform';
 import ENV from 'flimmerkasten-client/config/environment';
 import Button from 'flimmerkasten-client/components/ui/button';
 import bem from 'flimmerkasten-client/helpers/bem';
+import GameService from 'flimmerkasten-client/services/game';
 import PeerService from 'flimmerkasten-client/services/peer';
 
 import Navigation from './navigation';
@@ -29,6 +30,7 @@ interface ApplicationSignature {
 
 export default class Application extends Component<ApplicationSignature> {
   // Services
+  @service declare game: GameService;
   @service declare peer: PeerService;
   @service declare router: RouterService;
 

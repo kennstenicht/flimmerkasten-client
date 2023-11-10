@@ -225,53 +225,54 @@ export class Tetris extends Component<TetrisSignature> {
 
   // Template
   <template>
-    {{#if this.connection}}
-      <div class={{bem styles}} {{didInsert this.listenToData}} ...attributes>
-        <div class={{bem styles 'frame'}}></div>
-        <div class={{bem styles 'board-wrapper'}}>
-          <canvas
-            width='320'
-            height='640'
-            class={{bem styles 'board'}}
-            {{this.setupBoard}}
-          ></canvas>
-          {{#if this.game.isGameOver}}
-            <div class={{bem styles 'game-over'}}>
-              Game Over
-            </div>
-          {{/if}}
-        </div>
-        <div class={{bem styles 'frame'}}></div>
-
-        <div class={{bem styles 'sidebar'}}>
-          <div class={{bem styles 'score-wrapper'}}>
-            <div class={{bem styles 'box'}}>
-              <div class={{bem styles 'label'}}>Score</div>
-            </div>
-            <div class={{bem styles 'box-background'}}></div>
-            <div class={{bem styles 'score'}}>{{this.score}}</div>
-          </div>
-          <div class={{bem styles 'box'}}>
-            <div class={{bem styles 'label'}}>Level</div>
-            <div class={{bem styles 'value'}}>{{this.level}}</div>
-          </div>
-          <div class={{bem styles 'box'}}>
-            <div class={{bem styles 'label'}}>Lines</div>
-            <div class={{bem styles 'value'}}>{{this.lines}}</div>
-          </div>
-          <canvas class={{bem styles 'preview'}}></canvas>
-        </div>
-      </div>
-    {{else}}
+    {{#if this.game.isWaitingForPlayer}}
       <h2>Tetris</h2>
+      <h1>Waiting for player...</h1>
+    {{else}}
       {{#if this.game.showLeaderboard}}
+        <h2>Tetris</h2>
         <h1>Leaderboard</h1>
         <Leaderboard
           @items={{this.game.highscores}}
           @playerScore={{this.game.playerScore}}
         />
       {{else}}
-        <h1>Waiting for player...</h1>
+        <div class={{bem styles}} {{didInsert this.listenToData}} ...attributes>
+          <div class={{bem styles 'frame'}}></div>
+          <div class={{bem styles 'board-wrapper'}}>
+            <canvas
+              width='320'
+              height='640'
+              class={{bem styles 'board'}}
+              {{this.setupBoard}}
+            ></canvas>
+            {{#if this.game.isGameOver}}
+              <div class={{bem styles 'game-over'}}>
+                Game Over
+              </div>
+            {{/if}}
+          </div>
+          <div class={{bem styles 'frame'}}></div>
+
+          <div class={{bem styles 'sidebar'}}>
+            <div class={{bem styles 'score-wrapper'}}>
+              <div class={{bem styles 'box'}}>
+                <div class={{bem styles 'label'}}>Score</div>
+              </div>
+              <div class={{bem styles 'box-background'}}></div>
+              <div class={{bem styles 'score'}}>{{this.score}}</div>
+            </div>
+            <div class={{bem styles 'box'}}>
+              <div class={{bem styles 'label'}}>Level</div>
+              <div class={{bem styles 'value'}}>{{this.level}}</div>
+            </div>
+            <div class={{bem styles 'box'}}>
+              <div class={{bem styles 'label'}}>Lines</div>
+              <div class={{bem styles 'value'}}>{{this.lines}}</div>
+            </div>
+            <canvas class={{bem styles 'preview'}}></canvas>
+          </div>
+        </div>
       {{/if}}
     {{/if}}
   </template>
