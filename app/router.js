@@ -12,5 +12,6 @@ Router.map(function () {
     this.route('stream');
     this.route('tetris');
     this.route('snake');
+    this.route('breakout');
   });
 });
