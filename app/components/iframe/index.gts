@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import YouTubePlayer from 'youtube-player';
 
 import PeerService from 'flimmerkasten-client/services/peer';
 import bem from 'flimmerkasten-client/helpers/bem';
@@ -10,6 +11,7 @@ import styles from './styles.css';
 
 interface IframeSignature {
   Element: HTMLIFrameElement;
+  Args: {};
 }
 
 export class Iframe extends Component<IframeSignature> {
@@ -18,6 +20,25 @@ export class Iframe extends Component<IframeSignature> {
 
   // Defaults
   @tracked iframeSrc: string = 'https://ag-prop.com';
+  @tracked player?: YouTubePlayer;
+
+  createPlayer = (element) => {
+    this.player = YouTubePlayer(element);
+    // this.player.loadVideoById('M7lc1UVf-VE');
+    // this.player.playVideo();
+
+    this.player.loadPlaylist({
+      list: 'PLJpymKu-E9PeQKTvgaXL7H5YFeEyRa0_v',
+      listType: 'playlist',
+    });
+
+    //
+    this.player.on('onStateChange', (event) => {
+      console.log(event);
+      // PlayerStates
+      // YT.PlayerState.ENDED
+    });
+  };
 
   // Getter and setter
   get connection() {
@@ -51,12 +72,15 @@ export class Iframe extends Component<IframeSignature> {
     {{#if this.connection}}
       <div {{didInsert this.listenToData}}></div>
     {{/if}}
-    <iframe
+
+    <div {{didInsert this.createPlayer}}></div>
+
+    {{!-- <iframe
       class={{bem styles}}
       src={{this.iframeSrc}}
       title='Website'
       ...attributes
-    ></iframe>
+    ></iframe> --}}
   </template>
 }
 
