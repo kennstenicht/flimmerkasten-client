@@ -12,7 +12,7 @@ export class GameService extends Service {
   @service declare router: RouterService;
 
   // Config
-  private _debug: boolean = false;
+  private _debug: boolean = true;
   private gameOverTimeout: number = 3000;
   private idleTimeout = 60000;
   private idleTimer?: ReturnType<typeof setTimeout>;
@@ -59,10 +59,6 @@ export class GameService extends Service {
 
     this.isWaitingForPlayer = true;
 
-    if (this.idleTimer) {
-      clearTimeout(this.idleTimer);
-    }
-
     this.idleTimer = setTimeout(() => {
       this.debug('idleTimeout', 'transitionTo peer.iframe');
       this.activeGame = undefined;
@@ -71,6 +67,10 @@ export class GameService extends Service {
   }
 
   resetGame() {
+    if (this.idleTimer) {
+      clearTimeout(this.idleTimer);
+    }
+
     this.isGameOver = false;
     this.showLeaderboard = false;
     this.playerConnection = undefined;

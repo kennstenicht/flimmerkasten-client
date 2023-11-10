@@ -11,7 +11,7 @@ import Service from '@ember/service';
 
 export class AppDataService extends Service {
   // Config
-  private _debug: boolean = false;
+  private _debug: boolean = true;
   // private dir: number = BaseDirectory.AppData;
 
   async load(file: string) {
