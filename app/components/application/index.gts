@@ -108,26 +108,26 @@ export default class Application extends Component<ApplicationSignature> {
     <div class={{bem styles}} ...attributes>
       {{#if this.peer.isOpen}}
         <div {{!! didInsert (perform this.createHostConnection) !!}}>
-          {{#if this.isDevelopment}}
-            <div class={{bem styles 'toolbar'}}>
-              <div class={{bem styles 'content'}}>
-                <Navigation />
-                <div class={{bem styles 'spacer'}}></div>
-                <Button
-                  @variant={{if this.isStatusMonitorOpen 'active' 'primary'}}
-                  {{on 'click' this.toggleIsStatusMonitorOpen}}
-                >
-                  Status Monitor
-                </Button>
-                <Button
-                  @variant={{if this.isSetupCodeOpen 'active' 'primary'}}
-                  {{on 'click' this.toggleIsSetupCodeOpen}}
-                >
-                  Setup Code
-                </Button>
-              </div>
+          {{!-- {{#if this.isDevelopment}} --}}
+          <div class={{bem styles 'toolbar'}}>
+            <div class={{bem styles 'content'}}>
+              <Navigation />
+              <div class={{bem styles 'spacer'}}></div>
+              <Button
+                @variant={{if this.isStatusMonitorOpen 'active' 'primary'}}
+                {{on 'click' this.toggleIsStatusMonitorOpen}}
+              >
+                Status Monitor
+              </Button>
+              <Button
+                @variant={{if this.isSetupCodeOpen 'active' 'primary'}}
+                {{on 'click' this.toggleIsSetupCodeOpen}}
+              >
+                Setup Code
+              </Button>
             </div>
-          {{/if}}
+          </div>
+          {{!-- {{/if}} --}}
           {{#if this.isStatusMonitorOpen}}
             <StatusMonitor />
           {{/if}}

@@ -15,7 +15,10 @@ interface SetupCodeSignature {
 }
 
 const createQrCode = modifier((element, [data]: [string]) => {
-  QRCode.toCanvas(element, data, {
+  const url = `https://flimmerkasten.netlify.app/${data}/snake`;
+  console.log(url);
+
+  QRCode.toCanvas(element, url, {
     margin: 1,
     width: window.innerHeight,
     color: {
