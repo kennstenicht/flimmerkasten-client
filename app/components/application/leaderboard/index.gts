@@ -14,7 +14,7 @@ interface LeaderboardSignature {
   };
 }
 export const Leaderboard: TOC<LeaderboardSignature> = <template>
-  <table>
+  <table class={{bem styles}}>
     <thead class={{bem styles 'header'}}>
       <tr>
         <th></th>

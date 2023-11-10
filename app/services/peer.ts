@@ -16,6 +16,7 @@ import { restartableTask, timeout } from 'ember-concurrency';
 
 import AppDataService from 'flimmerkasten-client/services/app-data';
 import GameService from 'flimmerkasten-client/services/game';
+import { GameEvent } from 'flimmerkasten-client/models/game';
 // import ENV from 'flimmerkasten-client/config/environment';
 export class PeerService extends Service {
   // Services
@@ -107,6 +108,11 @@ export class PeerService extends Service {
       connection.on('data', (data) => {
         this.game.handleSetupGame(connection, data);
         this.game.handlePlayIntend(connection, data);
+
+        const event = data as GameEvent;
+        if (event.name === 'admin:reload') {
+          location.reload();
+        }
       });
     });
 

@@ -29,12 +29,13 @@
   =========================================================================== */
 
   /* Base font size */
-  --font-size: 12px;
+  --font-size-large: 48px;
+  --font-size: 16px;
   --font-size-small: 10px;
 
   /* Heading sizes */
-  --font-size-h1: 24px;
-  --font-size-h2: 20px;
+  --font-size-h1: 36px;
+  --font-size-h2: 28px;
   --font-size-h3: 18px;
   --font-size-h4: 18px;
   --font-size-h5: 18px;

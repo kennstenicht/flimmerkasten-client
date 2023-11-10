@@ -27,6 +27,8 @@ export class Iframe extends Component<IframeSignature> {
       autoplay: 1,
       controls: 0,
       mute: 1,
+      width: window.innerWidth,
+      height: window.innerHeight,
     });
 
     this.player.loadPlaylist({

@@ -2,8 +2,8 @@
    # APPLICATION / LEADERBOARD
    ========================================================================== */
 
-.header th {
-  font-size: 14px;
+.scope {
+  font-size: var(--font-size-large);
 }
 
 .footer td {
