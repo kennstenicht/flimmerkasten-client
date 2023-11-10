@@ -8,6 +8,7 @@ module.exports = function (environment) {
       'script-src': [
         'http://localhost:7020',
         "'self'",
+        'www.youtube.com',
         "'unsafe-inline'",
         'eval',
         "'unsafe-eval'",

@@ -23,9 +23,11 @@ export class Iframe extends Component<IframeSignature> {
   @tracked player?: YouTubePlayer;
 
   createPlayer = (element) => {
-    this.player = YouTubePlayer(element);
-    // this.player.loadVideoById('M7lc1UVf-VE');
-    // this.player.playVideo();
+    this.player = YouTubePlayer(element, {
+      autoplay: 1,
+      controls: 0,
+      mute: 1,
+    });
 
     this.player.loadPlaylist({
       list: 'PLJpymKu-E9PeQKTvgaXL7H5YFeEyRa0_v',
