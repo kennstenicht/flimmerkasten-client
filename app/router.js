@@ -7,8 +7,10 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function () {
-  this.route('iframe', { path: '/' });
-  this.route('stream');
-  this.route('tetris');
-  this.route('snake');
+  this.route('peer', { path: ':peer_id' }, function () {
+    this.route('iframe', { path: '/' });
+    this.route('stream');
+    this.route('tetris');
+    this.route('snake');
+  });
 });

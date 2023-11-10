@@ -12,9 +12,9 @@ interface NavigationSignature {
 export const Navigation: TOC<NavigationSignature> = <template>
   <nav class={{bem styles}} aria-label='Developer Navigation' ...attributes>
     <ul class={{bem styles 'list'}}>
-      <li><LinkTo @route='iframe'>IFrame</LinkTo></li>
-      <li><LinkTo @route='tetris'>Tetris</LinkTo></li>
-      <li><LinkTo @route='snake'>Snake</LinkTo></li>
+      <li><LinkTo @route='peer.iframe'>IFrame</LinkTo></li>
+      <li><LinkTo @route='peer.tetris'>Tetris</LinkTo></li>
+      <li><LinkTo @route='peer.snake'>Snake</LinkTo></li>
     </ul>
   </nav>
 </template>;

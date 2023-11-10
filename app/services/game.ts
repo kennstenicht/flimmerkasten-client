@@ -59,14 +59,13 @@ export class GameService extends Service {
 
     this.isWaitingForPlayer = true;
 
-    // TODO: Setup timer for transition to /
     if (this.idleTimer) {
       clearTimeout(this.idleTimer);
     }
 
     this.idleTimer = setTimeout(() => {
-      this.debug('idleTimeout', 'transitionTo /');
-      this.router.transitionTo('/');
+      this.debug('idleTimeout', 'transitionTo peer.iframe');
+      this.router.transitionTo('peer.iframe');
     }, this.idleTimeout);
   }
 
@@ -89,7 +88,7 @@ export class GameService extends Service {
     if (!this.activeGame || this.activeGame !== event.game) {
       this.debug('transitionTo', event.game);
 
-      this.router.transitionTo(event.game);
+      this.router.transitionTo(`peer.${event.game}`);
     }
   }
 
