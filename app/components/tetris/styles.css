@@ -45,6 +45,7 @@
 }
 
 .score-wrapper {
+  margin-top: var(--spacing-huge);
   margin-bottom: var(--spacing-base);
 }
 

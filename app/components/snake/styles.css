@@ -14,8 +14,8 @@
 
 .board {
   background-color: var(--color-grey-light);
-  width: calc(95vh - var(--spacing-large));
-  height: calc(95vh - var(--spacing-large));
+  width: calc(90vh - var(--spacing-large));
+  height: calc(90vh - var(--spacing-large));
 }
 
 .game-over {
