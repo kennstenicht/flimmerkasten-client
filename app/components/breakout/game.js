@@ -4,9 +4,10 @@ let canvas;
 let context;
 let paddle;
 
-function setup(can, ctx, onScore) {
+function setup(can, ctx, onLost, onScore) {
   canvas = can;
   context = ctx;
+  callbacks.onLost = onLost;
   callbacks.onScore = onScore;
 
   paddle = {
@@ -145,6 +146,7 @@ export function loop() {
     ball.y = 260;
     ball.dx = 0;
     ball.dy = 0;
+    callbacks.onLost();
   }
 
   // check to see if ball collides with paddle. if they do change y velocity

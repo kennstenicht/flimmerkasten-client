@@ -33,6 +33,7 @@ export class Breakout extends Component<BreakoutSignature> {
   // Defaults
   canvas?: HTMLCanvasElement | null;
   context?: CanvasRenderingContext2D | null;
+  @tracked lives = 3;
   @tracked score = 0;
 
   constructor(owner: unknown, args: BreakoutSignature['Args']) {
@@ -91,6 +92,7 @@ export class Breakout extends Component<BreakoutSignature> {
   };
 
   play = () => {
+    this.lives = 3;
     this.score = 0;
     Game.loop();
   };
@@ -100,6 +102,13 @@ export class Breakout extends Component<BreakoutSignature> {
     this.game.gameOver(this.score, this.level);
   };
 
+  onLost = () => {
+    this.lives -= 1;
+    if (this.lives <= 0) {
+      this.gameOver();
+    }
+  };
+
   onScore = (brick: {}) => {
     this.score += scoreMap[brick.color];
   };
@@ -107,7 +116,7 @@ export class Breakout extends Component<BreakoutSignature> {
   setupBoard = modifier((element: HTMLCanvasElement) => {
     this.canvas = element;
     this.context = this.canvas.getContext('2d');
-    Game.setup(this.canvas, this.context, this.onScore);
+    Game.setup(this.canvas, this.context, this.onLost, this.onScore);
   });
 
   // Template
@@ -149,6 +158,10 @@ export class Breakout extends Component<BreakoutSignature> {
             <div class={{bem styles 'box'}}>
               <div class={{bem styles 'label'}}>Level</div>
               <div class={{bem styles 'value'}}>{{this.level}}</div>
+            </div>
+            <div class={{bem styles 'box'}}>
+              <div class={{bem styles 'label'}}>Lives</div>
+              <div class={{bem styles 'value'}}>{{this.lives}}</div>
             </div>
             <canvas class={{bem styles 'preview'}}></canvas>
           </div>
