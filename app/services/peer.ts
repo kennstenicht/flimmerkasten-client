@@ -107,6 +107,7 @@ export class PeerService extends Service {
       });
 
       connection.on('data', (data) => {
+        this.game.handleSetupGame(connection, data);
         this.game.handlePlayIntend(connection, data);
       });
     });

@@ -26,27 +26,24 @@ export class Iframe extends Component<IframeSignature> {
 
   // Functions
   listenToData = () => {
-    this.connection?.on('data', (data) => {
-      const actions = (data as string).split(';');
-
-      actions.forEach((action) => {
-        const [actionName, actionValue] = action.split('=');
-
-        switch (actionName) {
-          case 'iframeSrc':
-            if (actionValue) {
-              this.iframeSrc = actionValue;
-            }
-            break;
-        }
-      });
-    });
-
-    this.connection?.on('error', () => {
-      if (this.connection) {
-        this.peer.connections.delete(this.connection);
-      }
-    });
+    // this.connection?.on('data', (data) => {
+    //   const actions = (data as string).split(';');
+    //   actions.forEach((action) => {
+    //     const [actionName, actionValue] = action.split('=');
+    //     switch (actionName) {
+    //       case 'iframeSrc':
+    //         if (actionValue) {
+    //           this.iframeSrc = actionValue;
+    //         }
+    //         break;
+    //     }
+    //   });
+    // });
+    // this.connection?.on('error', () => {
+    //   if (this.connection) {
+    //     this.peer.connections.delete(this.connection);
+    //   }
+    // });
   };
 
   // Template
