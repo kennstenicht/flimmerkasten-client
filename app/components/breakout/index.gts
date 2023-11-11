@@ -116,7 +116,13 @@ export class Breakout extends Component<BreakoutSignature> {
   setupBoard = modifier((element: HTMLCanvasElement) => {
     this.canvas = element;
     this.context = this.canvas.getContext('2d');
-    Game.setup(this.canvas, this.context, this.onLost, this.onScore);
+    Game.setup(
+      this.canvas,
+      this.context,
+      this.gameOver,
+      this.onLost,
+      this.onScore,
+    );
   });
 
   // Template

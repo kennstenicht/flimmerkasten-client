@@ -5,9 +5,10 @@ let canvas;
 let context;
 let paddle;
 
-function setup(can, ctx, onLost, onScore) {
+function setup(can, ctx, onGameOver, onLost, onScore) {
   canvas = can;
   context = ctx;
+  callbacks.onGameOver = onGameOver;
   callbacks.onLost = onLost;
   callbacks.onScore = onScore;
 
@@ -173,6 +174,10 @@ export function loop() {
       // remove brick from the bricks array
       bricks.splice(i, 1);
       callbacks.onScore(brick);
+
+      if (bricks.length <= 0) {
+        callbacks.onGameOver();
+      }
 
       // ball is above or below the brick, change y velocity
       // account for the balls speed since it will be inside the brick when it
