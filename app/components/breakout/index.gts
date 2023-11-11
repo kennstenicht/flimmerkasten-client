@@ -10,6 +10,7 @@ import GameService from 'flimmerkasten-client/services/game';
 import PeerService from 'flimmerkasten-client/services/peer';
 import bem from 'flimmerkasten-client/helpers/bem';
 
+// @ts-ignore
 import Game from './game';
 import styles from './styles.css';
 
@@ -113,6 +114,7 @@ export class Breakout extends Component<BreakoutSignature> {
   };
 
   onScore = (brick: {}) => {
+    // @ts-ignore
     this.score += scoreMap[brick.color];
   };
 
