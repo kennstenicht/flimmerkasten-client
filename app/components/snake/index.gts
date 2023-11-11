@@ -72,44 +72,46 @@ export class Snake extends Component<SnakeSignature> {
 
   // Functions
   listenToData = () => {
-    this.connection?.on('data', (data) => {
-      const event = data as GameEvent;
-      const commands = [
-        'remote:left',
-        'remote:right',
-        'remote:up',
-        'remote:down',
-      ];
-      if (event.game !== 'snake' || !commands.includes(event.name)) {
-        return;
-      }
-
-      if (event.name === 'remote:left' && this.snake.dx === 0) {
-        this.snake.dx = -this.grid;
-        this.snake.dy = 0;
-      }
-
-      if (event.name === 'remote:right' && this.snake.dx === 0) {
-        this.snake.dx = this.grid;
-        this.snake.dy = 0;
-      }
-
-      if (event.name === 'remote:up' && this.snake.dy === 0) {
-        this.snake.dy = -this.grid;
-        this.snake.dx = 0;
-      }
-
-      if (event.name === 'remote:down' && this.snake.dy === 0) {
-        this.snake.dy = this.grid;
-        this.snake.dx = 0;
-      }
-    });
+    this.connection?.on('data', this.onRemoteData);
 
     this.connection?.on('error', () => {
       if (this.connection) {
         this.peer.connections.delete(this.connection);
       }
     });
+  };
+
+  onRemoteData = (data: unknown) => {
+    const event = data as GameEvent;
+    const commands = [
+      'remote:left',
+      'remote:right',
+      'remote:up',
+      'remote:down',
+    ];
+    if (event.game !== 'snake' || !commands.includes(event.name)) {
+      return;
+    }
+
+    if (event.name === 'remote:left' && this.snake.dx === 0) {
+      this.snake.dx = -this.grid;
+      this.snake.dy = 0;
+    }
+
+    if (event.name === 'remote:right' && this.snake.dx === 0) {
+      this.snake.dx = this.grid;
+      this.snake.dy = 0;
+    }
+
+    if (event.name === 'remote:up' && this.snake.dy === 0) {
+      this.snake.dy = -this.grid;
+      this.snake.dx = 0;
+    }
+
+    if (event.name === 'remote:down' && this.snake.dy === 0) {
+      this.snake.dy = this.grid;
+      this.snake.dx = 0;
+    }
   };
 
   loop = () => {
@@ -202,6 +204,7 @@ export class Snake extends Component<SnakeSignature> {
   };
 
   gameOver = () => {
+    this.connection?.off('data', this.onRemoteData);
     cancelAnimationFrame(this.animationFrame);
     this.game.gameOver(this.score, this.level);
   };

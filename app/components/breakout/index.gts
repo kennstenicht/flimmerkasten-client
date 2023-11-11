@@ -10,6 +10,7 @@ import GameService from 'flimmerkasten-client/services/game';
 import PeerService from 'flimmerkasten-client/services/peer';
 import bem from 'flimmerkasten-client/helpers/bem';
 
+// @ts-ignore
 import Game from './game';
 import styles from './styles.css';
 
@@ -55,40 +56,42 @@ export class Breakout extends Component<BreakoutSignature> {
 
   // Functions
   listenToData = () => {
-    this.connection?.on('data', (data) => {
-      const event = data as GameEvent;
-      const commands = [
-        'remote:left',
-        'remote:right',
-        'remote:down',
-        'remote:stop',
-      ];
-      if (event.game !== 'breakout' || !commands.includes(event.name)) {
-        return;
-      }
-
-      if (event.name === 'remote:left') {
-        Game.controls.onLeft();
-      }
-
-      if (event.name === 'remote:right') {
-        Game.controls.onRight();
-      }
-
-      if (event.name === 'remote:down') {
-        Game.controls.onStart();
-      }
-
-      if (event.name === 'remote:stop') {
-        Game.controls.onStop();
-      }
-    });
+    this.connection?.on('data', this.onRemoteData);
 
     this.connection?.on('error', () => {
       if (this.connection) {
         this.peer.connections.delete(this.connection);
       }
     });
+  };
+
+  onRemoteData = (data: unknown) => {
+    const event = data as GameEvent;
+    const commands = [
+      'remote:left',
+      'remote:right',
+      'remote:down',
+      'remote:stop',
+    ];
+    if (event.game !== 'breakout' || !commands.includes(event.name)) {
+      return;
+    }
+
+    if (event.name === 'remote:left') {
+      Game.controls.onLeft();
+    }
+
+    if (event.name === 'remote:right') {
+      Game.controls.onRight();
+    }
+
+    if (event.name === 'remote:down') {
+      Game.controls.onStart();
+    }
+
+    if (event.name === 'remote:stop') {
+      Game.controls.onStop();
+    }
   };
 
   play = () => {
@@ -98,6 +101,7 @@ export class Breakout extends Component<BreakoutSignature> {
   };
 
   gameOver = () => {
+    this.connection?.off('data', this.onRemoteData);
     Game.stop();
     this.game.gameOver(this.score, this.level);
   };
@@ -110,6 +114,7 @@ export class Breakout extends Component<BreakoutSignature> {
   };
 
   onScore = (brick: {}) => {
+    // @ts-ignore
     this.score += scoreMap[brick.color];
   };
 

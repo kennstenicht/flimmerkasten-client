@@ -69,68 +69,72 @@ export class Tetris extends Component<TetrisSignature> {
 
   // Functions
   listenToData = () => {
-    this.connection?.on('data', (data) => {
-      const event = data as GameEvent;
-      const commands = [
-        'remote:left',
-        'remote:right',
-        'remote:up',
-        'remote:down',
-      ];
-      if (event.game !== 'tetris' || !commands.includes(event.name)) {
-        return;
-      }
-
-      const tetrominoCopy = { ...this.tetromino };
-
-      if (event.name === 'remote:left') {
-        tetrominoCopy.col--;
-      }
-
-      if (event.name === 'remote:right') {
-        tetrominoCopy.col++;
-      }
-
-      if (event.name === 'remote:up') {
-        tetrominoCopy.matrix = rotate(tetrominoCopy.matrix);
-      }
-
-      if (event.name === 'remote:down') {
-        tetrominoCopy.row++;
-
-        if (!isValidMove(this.playfield, tetrominoCopy)) {
-          tetrominoCopy.row--;
-
-          const successful = placeTetromino(this.playfield, tetrominoCopy);
-
-          if (successful) {
-            this.lines += successful.clearedLines;
-            this.score += scoreMap[successful.clearedLines] ?? 0;
-            if (this.tetrominoSequence.length === 0) {
-              this.tetrominoSequence = generateSequence();
-            }
-            this.tetromino = getNextTetromino(
-              this.playfield,
-              this.tetrominoSequence,
-            );
-          } else {
-            this.gameOver();
-          }
-
-          return;
-        }
-      }
-
-      if (isValidMove(this.playfield, tetrominoCopy)) {
-        this.tetromino = tetrominoCopy;
-      }
-    });
+    this.connection?.on('data', this.onRemoteData);
 
     this.connection?.on('error', () => {
       if (this.connection) {
         this.peer.connections.delete(this.connection);
       }
     });
+  };
+
+  onRemoteData = (data: unknown) => {
+    const event = data as GameEvent;
+    const commands = [
+      'remote:left',
+      'remote:right',
+      'remote:up',
+      'remote:down',
+    ];
+    if (event.game !== 'tetris' || !commands.includes(event.name)) {
+      return;
+    }
+
+    const tetrominoCopy = { ...this.tetromino };
+
+    if (event.name === 'remote:left') {
+      tetrominoCopy.col--;
+    }
+
+    if (event.name === 'remote:right') {
+      tetrominoCopy.col++;
+    }
+
+    if (event.name === 'remote:up') {
+      console.log(event.name, 'before', tetrominoCopy.matrix);
+      tetrominoCopy.matrix = rotate(tetrominoCopy.matrix);
+      console.log(event.name, 'after', tetrominoCopy.matrix);
+    }
+
+    if (event.name === 'remote:down') {
+      tetrominoCopy.row++;
+
+      if (!isValidMove(this.playfield, tetrominoCopy)) {
+        tetrominoCopy.row--;
+
+        const successful = placeTetromino(this.playfield, tetrominoCopy);
+
+        if (successful) {
+          this.lines += successful.clearedLines;
+          this.score += scoreMap[successful.clearedLines] ?? 0;
+          if (this.tetrominoSequence.length === 0) {
+            this.tetrominoSequence = generateSequence();
+          }
+          this.tetromino = getNextTetromino(
+            this.playfield,
+            this.tetrominoSequence,
+          );
+        } else {
+          this.gameOver();
+        }
+
+        return;
+      }
+    }
+
+    if (isValidMove(this.playfield, tetrominoCopy)) {
+      this.tetromino = tetrominoCopy;
+    }
   };
 
   loop = () => {
@@ -214,6 +218,7 @@ export class Tetris extends Component<TetrisSignature> {
   };
 
   gameOver = () => {
+    this.connection?.off('data', this.onRemoteData);
     cancelAnimationFrame(this.animationFrame);
     this.game.gameOver(this.score, this.level);
   };
