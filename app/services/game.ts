@@ -158,10 +158,8 @@ export class GameService extends Service {
 
     // Load and initialize leaderboard
     const content = await this.appData.load(file);
-    if (content) {
-      this.leaderboard.fromJSON(content);
-      this.highscores = this.leaderboard.top(10);
-    }
+    this.leaderboard.fromJSON(content || '[]');
+    this.highscores = this.leaderboard.top(10);
   }
 
   private async saveScore(game: string, score: Score): Promise<Score> {
