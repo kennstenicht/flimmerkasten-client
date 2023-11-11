@@ -214,12 +214,9 @@ export class Snake extends Component<SnakeSignature> {
   // Template
   <template>
     {{#if this.game.isWaitingForPlayer}}
-      <h2>Snake</h2>
       <h1>Waiting for player...</h1>
     {{else}}
       {{#if this.game.showLeaderboard}}
-        <h2>Snake</h2>
-        <h1>Leaderboard</h1>
         <Leaderboard
           @items={{this.game.highscores}}
           @playerScore={{this.game.playerScore}}
@@ -252,6 +249,9 @@ export class Snake extends Component<SnakeSignature> {
               <div class={{bem styles 'value'}}>{{this.level}}</div>
             </div>
             <canvas class={{bem styles 'preview'}}></canvas>
+            <div class={{bem styles 'made-by'}}>
+              made with love by ag—prop and friends
+            </div>
           </div>
         </div>
       {{/if}}

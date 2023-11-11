@@ -129,3 +129,9 @@
   text-align: right;
   padding-right: 22px;
 }
+
+.made-by {
+  margin-top: auto;
+  color: var(--color-white);
+  font-size: var(--font-size);
+}

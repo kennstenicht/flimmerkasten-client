@@ -47,10 +47,10 @@ const level1 = [
 
 // create a mapping between color short code (R, O, G, Y) and color name
 const colorMap = {
-  R: 'red',
-  O: 'orange',
-  G: 'green',
-  Y: 'yellow',
+  R: '#8b956d',
+  O: '#6b7353',
+  G: '#414141',
+  Y: '#22251b',
 };
 
 // use a 2px gap between each brick
@@ -86,8 +86,8 @@ function buildBricks() {
 const ball = {
   x: 130,
   y: 260,
-  width: 5,
-  height: 5,
+  width: 10,
+  height: 10,
 
   // how fast the ball should go in either the x or y direction
   speed: 2,
@@ -198,7 +198,7 @@ export function loop() {
   }
 
   // draw walls
-  context.fillStyle = 'lightgrey';
+  context.fillStyle = '#22251b';
   context.fillRect(0, 0, canvas.width, wallSize);
   context.fillRect(0, 0, wallSize, canvas.height);
   context.fillRect(canvas.width - wallSize, 0, wallSize, canvas.height);
@@ -216,7 +216,7 @@ export function loop() {
   });
 
   // draw paddle
-  context.fillStyle = 'cyan';
+  context.fillStyle = '#35392a';
   context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
 
