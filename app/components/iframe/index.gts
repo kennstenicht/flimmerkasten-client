@@ -14,6 +14,8 @@ interface IframeSignature {
   Args: {};
 }
 
+const videos = ['XAyTOC0U7W0', 'zA62-9atzVo', 'j4ZtknkXlc8'];
+
 export class Iframe extends Component<IframeSignature> {
   // Services
   @service declare peer: PeerService;
@@ -31,17 +33,25 @@ export class Iframe extends Component<IframeSignature> {
       height: window.innerHeight,
     });
 
-    this.player.loadPlaylist({
-      list: 'PLJpymKu-E9PeQKTvgaXL7H5YFeEyRa0_v',
-      listType: 'playlist',
-    });
-    this.player.playVideo();
+    // Custom video id list
+    const nextIndex = (videos.length * Math.random()) | 0;
+    this.player.loadPlaylist(videos, nextIndex);
+
+    // Playlist
+    // this.player.loadPlaylist({
+    //   list: 'PLJpymKu-E9PeQKTvgaXL7H5YFeEyRa0_v',
+    //   listType: 'playlist',
+    // });
+    // this.player.playVideo();
 
     //
     this.player.on('stateChange', (event) => {
       console.log(event);
-      // PlayerStates
-      // YT.PlayerState.ENDED
+
+      if (event.data === -1) {
+        console.log(event.target);
+        this.player.setShuffle(true);
+      }
     });
   };
 
