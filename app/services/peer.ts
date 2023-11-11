@@ -90,6 +90,9 @@ export class PeerService extends Service {
     peer.on('error', (error) => {
       this.debug('error', peer.id, error);
       this.errorMessage = error.message;
+      this.isOpen = false;
+      this.errorMessage = error.message;
+      this.createPeer.perform(id, 1000);
     });
 
     peer.on('connection', (connection) => {
