@@ -20,10 +20,10 @@ interface BreakoutSignature {
 }
 
 const scoreMap: {} = {
-  red: 4,
-  orange: 3,
-  green: 2,
-  yellow: 1,
+  '#8b956d': 4,
+  '#6b7353': 3,
+  '#414141': 2,
+  '#22251b': 1,
 };
 
 export class Breakout extends Component<BreakoutSignature> {
