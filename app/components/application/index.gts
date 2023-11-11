@@ -4,10 +4,10 @@ import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import RouterService from '@ember/routing/router-service';
 import { registerDestructor } from '@ember/destroyable';
-import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+// import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 
 import { restartableTask } from 'ember-concurrency';
-import perform from 'ember-concurrency/helpers/perform';
+// import perform from 'ember-concurrency/helpers/perform';
 
 import ENV from 'flimmerkasten-client/config/environment';
 import Button from 'flimmerkasten-client/components/ui/button';
