@@ -67,7 +67,7 @@ export class Snake extends Component<SnakeSignature> {
   }
 
   get level() {
-    return Math.round(this.score / 2);
+    return Math.round(this.score / 4);
   }
 
   // Functions
