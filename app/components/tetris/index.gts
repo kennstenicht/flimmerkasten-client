@@ -60,7 +60,7 @@ export class Tetris extends Component<TetrisSignature> {
   }
 
   get level() {
-    return Math.round(this.lines / 2);
+    return Math.round(this.lines / 4);
   }
 
   get speed() {
